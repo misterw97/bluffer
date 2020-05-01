@@ -12,7 +12,7 @@ Vue.use(VueRouter)
     component: Welcome
   },
   {
-    path: '/game/:game/user/:user',
+    path: '/game/:game/player/:player',
     name: 'Game',
     component: Game
   }
