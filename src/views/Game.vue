@@ -6,7 +6,7 @@
         <h1 v-else>{{ player.name }}</h1>
         <GameStateDisplay :state="game.state" />
       </div>
-      <h2 v-if="player.isMaster">{{ player.name }}: {{ player.isMaster }}</h2>
+      <h2 v-if="player.isMaster">{{ player.name }} (Maître de jeu)</h2>
       <h2 v-else>Bluffer #{{ player.game }}</h2>
 
       <div class="header">

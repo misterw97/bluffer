@@ -8,7 +8,7 @@
       class="player"
       :key="p.id"
     >
-      <img :src="`https://api.adorable.io/avatars/50/${p.id}`" :alt="`Avatar de ${p.name}`" />
+      <Avatar :size="50" :player="p" />
       <div class="info">
         <div>{{ p.name }}</div>
         <div>{{ p.score }}pts</div>
@@ -20,10 +20,11 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Socket } from "vue-socket.io-extended";
+import Avatar from "./Avatar.vue";
 import Player from "../models/Player";
 
 @Component({
-  components: {}
+  components: { Avatar }
 })
 export default class extends Vue {
   @Prop() private player!: Player;
