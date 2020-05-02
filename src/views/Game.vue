@@ -27,6 +27,7 @@ import { Socket } from "vue-socket.io-extended";
 import QuestionPlayer from "./player/QuestionPlayer.vue";
 import QuestionMaster from "./master/QuestionMaster.vue";
 import AnswersMaster from "./master/AnswersMaster.vue";
+import AnswersPlayer from "./player/AnswersPlayer.vue";
 import PlayerList from "../components/PlayerList.vue";
 import GameStateDisplay from "../components/GameStateDisplay.vue";
 import Button from "../components/Button.vue";
@@ -34,10 +35,11 @@ import Player from "../models/Player";
 import Game from "../models/Game";
 import GameState from "../models/GameState";
 
-type GameView =
+type GameViewType =
   | typeof QuestionMaster
   | typeof AnswersMaster
-  | typeof QuestionPlayer;
+  | typeof QuestionPlayer
+  | typeof AnswersPlayer;
 
 @Component({
   components: {
@@ -46,10 +48,10 @@ type GameView =
     GameStateDisplay
   }
 })
-export default class extends Vue {
+export default class GameView extends Vue {
   private player: Player | null = null;
   private game: Game | null = null;
-  private gameView: GameView | null = null;
+  private gameView: GameViewType | null = null;
   private action: string = "";
   private data?: any;
 
@@ -64,8 +66,13 @@ export default class extends Vue {
         this.gameView = this.player?.isMaster ? QuestionMaster : QuestionPlayer;
         break;
       case GameState.answers:
+        if (!this.player?.isMaster) {
+          this.gameView = AnswersPlayer;
+          break;
+        }
         this.action = "Ouvrir le vote";
         this.gameView = AnswersMaster;
+        break;
     }
   }
 

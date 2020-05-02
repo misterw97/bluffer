@@ -1,25 +1,16 @@
 <template>
-  <div class="answers">    
-    <Answer
-      :disabled="true"
-      :value="game.data.question"
-      title="Question"
-    ></Answer>
+  <div class="answers">
+    <Answer :disabled="true" :value="game.data.question" title="Question"></Answer>
 
-    <Answer
-      v-model="realAnswer"
-      title="Réponse (vraie)"
-      placeholder="La vraie réponse du jeu"
-    ></Answer>
-    
+    <Answer v-model="realAnswer" title="Réponse (vraie)" placeholder="La vraie réponse du jeu"></Answer>
+
     <Answer
       v-for="answer in answers"
       :disabled="true"
       :key="answer.player.id"
       :title="answer.player.name"
-      :value="answer.answer"
+      :value="answer.bluff"
     ></Answer>
-    
   </div>
 </template>
 
@@ -31,7 +22,10 @@ import Answer from "../../components/Answer.vue";
 import Player from "../../models/Player";
 import Game from "../../models/Game";
 
-interface IAnswer { player: Player; answer: string }
+interface Bluff {
+  player: Player;
+  bluff: string;
+}
 
 @Component({
   components: {
@@ -44,31 +38,13 @@ export default class AnswersMaster extends Vue {
   @Prop() private game!: Game;
   private realAnswerValue = "";
 
-  private answers: Array<IAnswer> = [
-    {
-        player: {
-          id: '123456abc',
-          name: 'Isabelle',
-          game: '',
-          score: 0,
-        },
-        answer: 'La réponse de Isabelle'
-      },
-      {
-        player: {
-          id: '123edaf',
-          name: 'Roger',
-          game: '',
-          score: 0,
-        },
-        answer: 'La réponse de Roger'
-      }
-  ];
+  private answers: Array<Bluff> = [];
 
   @Socket()
-  message(data: IAnswer) {
-    console.log(data);
-    this.answers.push(data);
+  bluff(b: Bluff) {
+    console.log('new bluff', b);
+    this.answers = this.answers.filter(a => a.player.id != b.player.id);
+    this.answers.push(b);
   }
 
   private get realAnswer() {
