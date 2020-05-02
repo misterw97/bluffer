@@ -89,14 +89,16 @@ class Game {
         this._save();
     }
 
-    updatePlayerBluff(player, bluff) {
+    updatePlayerBluff(player, bluff, fromMaster = false) {
         this.state.lock.bluffs[player.id] = bluff;
         this._save();
-        console.log('master', this.getMaster());
-        Game.io.to(this.getMaster().socket).emit('bluff', {
-            player,
-            bluff
-        });
+        if (fromMaster)
+            Game.io.to(player.socket).emit('bluff', bluff);
+        else
+            Game.io.to(this.getMaster().socket).emit('bluff', {
+                player,
+                bluff
+            });
     }
 
     master(...data) {

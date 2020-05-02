@@ -1,6 +1,6 @@
 <template>
   <main>
-    <div v-if="!!player" class="game">
+    <div v-if="!!player&&!!game" class="game">
       <div class="row">
         <h1 v-if="player.isMaster">Jeu #{{ player.game }}</h1>
         <h1 v-else>{{ player.name }}</h1>
