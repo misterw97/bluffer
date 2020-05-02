@@ -1,6 +1,6 @@
 <template>
   <div class="answers">
-    <Button @click="sendQuestion()">Ouvrir le vote</Button>
+    <Button id="fab" @click="sendAnswer()">Ouvrir le vote</Button>
     
     <Answer
       :disabled="true"
@@ -71,6 +71,12 @@ export default class extends Vue {
   message(data: IAnswer) {
     console.log(data);
     this.answers.push(data);
+  }
+
+  sendAnswer() {
+    this.$emit('data', {
+      answer: this.realAnswer
+    })
   }
 }
 </script>

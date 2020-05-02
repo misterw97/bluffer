@@ -1,6 +1,6 @@
 <template>
   <div class="question">
-    <Button @click="sendQuestion()">Ouvrir les réponses</Button>
+    <Button id="fab" @click="sendQuestion()">Ouvrir les réponses</Button>
     <Answer
       v-model="question"
       title="Question"
@@ -29,7 +29,7 @@ export default class extends Vue {
   private question: string = "";
 
   sendQuestion() {
-      this.$socket.client.emit('data', {
+      this.$emit('data', {
           question: this.question
       });
   }

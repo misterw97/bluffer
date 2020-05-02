@@ -5,7 +5,7 @@
       <h2>{{ player.name }}: {{ player.isMaster }}</h2>
       <h3 v-if="!!game">Tour #{{game.count+1}}</h3>
       <div v-if="(!game)||(game.state=='w')">waiting animation... {{ game }}// TODO</div>
-      <component v-else v-bind:is="gameView" :player="player" :game="game"></component>
+      <component v-else v-bind:is="gameView" :player="player" :game="game" @data="nextStep"></component>
     </div>
     <PlayerList v-show="!!player" :player="player" />
   </main>
@@ -59,6 +59,10 @@ export default class extends Vue {
       (player: Player) => (this.player = player)
     );
   }
+
+  nextStep(data: any) {
+    this.$socket.client.emit("data", data);
+  }
 }
 </script>
 
@@ -71,6 +75,16 @@ main {
   .game {
     flex: 1;
     padding: 30px;
+    text-align: left;
+
+    h1 {
+      margin-bottom: 0;
+    }
+
+    h3 {
+      margin-top: 40px;
+      margin-bottom: 30px;
+    }
   }
 }
 </style>

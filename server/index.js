@@ -56,33 +56,11 @@ io.on('connection', (socket) => {
   })
 
   socket.on('data', (data) => {
-    // TODO: check data against game progression and player rights
-    game.state.state = 'a';
-    game.state.data = data;
-    game._save();
-    console.log('new state', game.state);
-    game.emitState();
-
-    setTimeout(() => {
-      socket.emit('message', {
-        player: {
-          id: '123456abc',
-          name: 'Isabelle',
-          game: '',
-        },
-        answer: 'La réponse de Isabelle'
-      })
-    }, 700);
-    setTimeout(() => {
-      socket.emit('message', {
-        player: {
-          id: '7890def',
-          name: 'Roger',
-          game: '',
-        },
-        answer: 'La réponse de Roger'
-      })
-    }, 1700);
+    if (!player.isMaster) {
+      console.warn('A non-master sent data!');
+      return;
+    };
+    game.pass(data);
   });
 });
 
