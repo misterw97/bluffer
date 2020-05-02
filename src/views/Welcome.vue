@@ -44,7 +44,7 @@ export default class Welcome extends Vue {
     }, (data: any) => {
       this.$router.push({ name: 'Game', params: { 
         player: data.id,
-        game: data.room
+        game: data.game
       } })
     });
   }
@@ -64,7 +64,7 @@ div {
 input {
   margin-bottom: 10px;
   padding: 10px;
-  border: 2px solid orange;
+  border: 2px solid $secondary;
   border-radius: 5px;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   font-size: 1em;

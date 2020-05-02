@@ -1,6 +1,7 @@
 export default interface Player {
     id: string;
     name: string;
-    room: string;
+    game: string;
     socket?: string;
+    isMaster?: boolean;
 }

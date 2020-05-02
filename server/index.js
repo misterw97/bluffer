@@ -1,40 +1,21 @@
 const app = require('express')();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
+const { Game } = require('./game');
 
-const data = {
-  rooms: {},
-  players: {},
-};
-
-const getRoom = (id) => {
-  return data.rooms[id];
+const getPlayer = (roomId, id) => {
+  const room = getRoom(roomId);
+  if (!room)
+    throw new Error(`Room #${roomId} does not exist.`);
+  return room.players[id];
 }
 
-const setRoom = (id, value = {}) => {
-  data.rooms[id] = value;
+const setPlayer = (roomId, id, value = {}) => {
+  const room = getRoom(roomId);
+  if (!room)
+    throw new Error(`Room #${roomId} does not exist.`);
+  room.players[id] = value;
   return true;
-}
-
-const getPlayer = (id) => {
-  return data.players[id];
-}
-
-const setPlayer = (id, value = {}) => {
-  data.players[id] = value;
-  return true;
-}
-
-const randomInt = (min, max) => {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
-const createRoom = () => {
-  roomId = randomInt(100000, 999999);
-  if (!!getRoom(roomId))
-    return createRoom();
-  setRoom(roomId);
-  return roomId;
 }
 
 const createPlayer = () => {
@@ -50,23 +31,24 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-  console.log('a user connected');
+  console.log('a user connected: ' + socket.id);
   socket.on('join', (data, callback) => {
-    let player = { ...data };
-    if (!player.id) {
-      player.id = createPlayer();
-    } else {
-      player = { ...player, ...getPlayer(player.id) }
-    }
-    player.socket = socket.id;
-    if (!player.room) {
-      player.room = createRoom();
-    }
-    socket.join(player.room);
-    // TODO: validate fields?
-    console.log(player);
-    setPlayer(player.id, player);
-    callback(player);
+    // join with player data: { id?, game?, name }
+    let game;
+    let player;
+    try {
+      if (!data.game) {
+        game = new Game();
+        console.log('game', game);
+        player = game.master(data, socket);
+      } else {
+        game = Game.get(data.game);
+        if (!game) throw new Error(`Game #${data.game} does not exist.`);
+        player = game.player(data, socket)
+      }
+      console.log(player);
+      callback(player);
+    } catch (e) { callback(e) }
   })
 });
 
