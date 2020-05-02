@@ -9,13 +9,25 @@ const State = {
     results: 'r'
 }
 
+const MIN_LENGTH = 3;
+
 class Game {
     constructor() {
         this.players = {};
+        this._newState();
+    }
+
+    _newState() {
+        const lastCount = this.state?.count || 0;
         this.state = {
             state: State.question,
-            count: 0,
-            data: {}
+            count: lastCount + 1,
+            data: {},
+            lock: {
+                answers: {},
+                bluffs: {},
+                votes: {}
+            }
         };
     }
 
@@ -42,6 +54,40 @@ class Game {
         return player;
     }
 
+    pass(data) {
+        switch (this.state.state) {
+            case State.question:
+                this._handleQuestionData(data);
+                break;
+            case State.answers:
+                this._handleAnswerData(data);
+                break;
+        }
+        game.emitState();
+    }
+
+    _handleQuestionData(data) {
+        if (!data.question || data.question.length < MIN_LENGTH)
+            throw new Error('missing question or length under ' + MIN_LENGTH);
+        this.state.data = {
+            question: data.question
+        };
+        this.state.state = State.answers;
+        this._save();
+    }
+
+    _handleAnswerData(data) {
+        if (!data.answer || data.answer.length < MIN_LENGTH)
+            throw new Error('missing question or length under ' + MIN_LENGTH);
+        // TODO: mix answers and hash them 
+        //data.answer
+        this.state.data = {
+            answers: [data.answer]
+        };
+        this.state.state = State.votes;
+        this._save();
+    }
+
     player({ name, id }, socket, isMaster = false) {
         let player;
         if (!id) {
@@ -59,7 +105,7 @@ class Game {
 
     emitState(socket = Game.io.to(this.id)) {
         console.log('game state', this.state);
-        socket.emit('state', this.state);
+        socket.emit('state', { ...this.state, lock: undefined });
     }
 
     emitScores(socket = Game.io.to(this.id)) {
