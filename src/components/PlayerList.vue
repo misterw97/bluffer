@@ -1,5 +1,5 @@
 <template>
-  <div class="player-list">
+  <div v-if="!!player" class="player-list">
     <div class="title">Players</div>
 
     <div
