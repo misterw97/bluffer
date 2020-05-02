@@ -32,11 +32,12 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-  console.log('a user connected: ' + socket.id);
+  console.log('a user connected with id: ' + socket.id);
+  let game;
+  let player;
+
+  // join with player data: { id?, game?, name }
   socket.on('join', (data, callback) => {
-    // join with player data: { id?, game?, name }
-    let game;
-    let player;
     try {
       if (!data.game) {
         game = new Game(io);
@@ -48,11 +49,18 @@ io.on('connection', (socket) => {
       }
       console.log('player', player);
       callback(player);
+      game.emitState(socket);
     } catch (e) {
       console.error(e);
-      callback(e)
     }
   })
+
+  socket.on('data', (data) => {
+    game.state.state = 'a';
+    game.state.data = data;
+    console.log('new state', game.state);
+    game.emitState();
+  });
 });
 
 http.listen(3000, () => {

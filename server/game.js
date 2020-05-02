@@ -1,13 +1,22 @@
 const { getGame, setGame } = require('./datasource');
 const { randomInt } = require('./utils');
 
+const State = {
+    waiting: 'w',
+    question: 'q',
+    answers: 'a',
+    votes: 'v',
+    results: 'r'
+}
+
 class Game {
     constructor() {
         this._generateId();
         this.players = {};
         this.state = {
-            id: 'q',
-            name: 'question'
+            state: State.question,
+            count: 0,
+            data: {}
         };
     }
 
@@ -44,7 +53,6 @@ class Game {
         if (!player)
             throw new Error(`Player #${id} not found.`);
         player.socket = socket.id;
-        this.emitState();
         socket.join(this.id);
         return player;
     }
