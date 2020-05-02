@@ -4,6 +4,12 @@
     <Button @click="sendQuestion()">Ouvrir le vote</Button>
     <h3>Question</h3>
     <textarea disabled :value="game.data.question" />
+    
+    <textarea v-for="answer in answers"
+    disabled
+    :key="answer.player.id"
+    :value="answer.answer" />
+    
   </div>
 </template>
 
@@ -14,6 +20,8 @@ import Button from "../components/Button.vue";
 import Player from "../models/Player";
 import Game from "../models/Game";
 
+interface Answer { player: Player; answer: string }
+
 @Component({
   components: {
     Button
@@ -23,9 +31,29 @@ export default class extends Vue {
   @Prop() private player!: Player;
   @Prop() private game!: Game;
 
+  private answers: Array<Answer> = [
+    {
+        player: {
+          id: '123456abc',
+          name: 'Isabelle',
+          game: '',
+        },
+        answer: 'La réponse de Isabelle'
+      },
+      {
+        player: {
+          id: '123edaf',
+          name: 'Roger',
+          game: '',
+        },
+        answer: 'La réponse de Roger'
+      }
+  ];
+
   @Socket()
-  message(data: { player: Player; answer: string }) {
+  message(data: Answer) {
     console.log(data);
+    this.answers.push(data);
   }
 }
 </script>
