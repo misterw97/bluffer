@@ -1,11 +1,13 @@
 <template>
   <div class="answer">
-    <p>{{ title }}</p>
-    <textarea
-    v-model="field"
-    :disabled="!!disabled"
-    :placeholder="placeholder">
-    </textarea>
+    <div class="header">
+      <p>{{ title }}</p>
+      <div class="controls">
+        <span>edit</span>
+        <span>merge</span>
+      </div>
+    </div>
+    <textarea v-model="field" :disabled="!!disabled" :placeholder="placeholder"></textarea>
   </div>
 </template>
 
@@ -21,11 +23,11 @@ export default class extends Vue {
   private fieldValue?: string;
 
   get field() {
-    return this.fieldValue || this.value || "";
+    return this.fieldValue || this.value || "";
   }
   set field(value: string) {
     this.fieldValue = value;
-    this.$emit('input', value);
+    this.$emit("input", value);
   }
 }
 </script>
@@ -33,11 +35,15 @@ export default class extends Vue {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
 .answer {
-  p {
-    font-size: 1.3em;
-    margin: 0;
-    text-align: left;
-    margin-bottom: 10px;
+  .header {
+    display: flex;
+    justify-content: space-between;
+    p {
+      font-size: 1.3em;
+      margin: 0;
+      text-align: left;
+      margin-bottom: 10px;
+    }
   }
   textarea {
     width: 100%;
