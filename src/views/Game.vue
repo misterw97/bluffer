@@ -2,14 +2,16 @@
   <main>
     <div v-if="!!player" class="game">
       <div class="row">
-        <h1>Jeu #{{ player.game }}</h1>
+        <h1 v-if="player.isMaster">Jeu #{{ player.game }}</h1>
+        <h1 v-else>{{ player.name }}</h1>
         <GameStateDisplay :state="game.state" />
       </div>
-      <h2>{{ player.name }}: {{ player.isMaster }}</h2>
+      <h2 v-if="player.isMaster">{{ player.name }}: {{ player.isMaster }}</h2>
+      <h2 v-else>Bluffer #{{ player.game }}</h2>
 
       <div class="header">
         <h3 v-if="!!game">Tour #{{game.count+1}}</h3>
-        <Button v-if="action!=''" id="fab" @click="sendData()">{{ action }}</Button>
+        <Button v-if="player.isMaster && action!=''" id="fab" @click="sendData()">{{ action }}</Button>
       </div>
 
       <div v-if="(!game)||(game.state=='w')">waiting animation... {{ game }}// TODO</div>
@@ -22,6 +24,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Socket } from "vue-socket.io-extended";
+import QuestionPlayer from "./player/QuestionPlayer.vue";
 import QuestionMaster from "./master/QuestionMaster.vue";
 import AnswersMaster from "./master/AnswersMaster.vue";
 import PlayerList from "../components/PlayerList.vue";
@@ -30,6 +33,11 @@ import Button from "../components/Button.vue";
 import Player from "../models/Player";
 import Game from "../models/Game";
 import GameState from "../models/GameState";
+
+type GameView =
+  | typeof QuestionMaster
+  | typeof AnswersMaster
+  | typeof QuestionPlayer;
 
 @Component({
   components: {
@@ -41,7 +49,7 @@ import GameState from "../models/GameState";
 export default class extends Vue {
   private player: Player | null = null;
   private game: Game | null = null;
-  private gameView: null | typeof QuestionMaster | typeof AnswersMaster = null;
+  private gameView: GameView | null = null;
   private action: string = "";
   private data?: any;
 
@@ -53,7 +61,7 @@ export default class extends Vue {
     switch (this.game.state) {
       case GameState.question:
         this.action = "Ouvrir les réponses";
-        this.gameView = QuestionMaster;
+        this.gameView = this.player?.isMaster ? QuestionMaster : QuestionPlayer;
         break;
       case GameState.answers:
         this.action = "Ouvrir le vote";
@@ -95,6 +103,8 @@ main {
     flex: 1;
     padding: 30px;
     text-align: left;
+    display: flex;
+    flex-direction: column;
 
     .row {
       display: flex;
