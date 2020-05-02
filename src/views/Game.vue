@@ -1,5 +1,6 @@
 <template>
   <main>
+    <GameStateDisplay />
     <div v-if="!!player" class="game">
       <h1>Jeu #{{ player.game }}</h1>
       <h2>{{ player.name }}: {{ player.isMaster }}</h2>
@@ -22,6 +23,7 @@ import { Socket } from "vue-socket.io-extended";
 import QuestionMaster from "./QuestionMaster.vue";
 import AnswersMaster from "./AnswersMaster.vue";
 import PlayerList from "../components/PlayerList.vue";
+import GameStateDisplay from "../components/GameStateDisplay.vue";
 import Button from "../components/Button.vue";
 import Player from "../models/Player";
 import Game from "../models/Game";
@@ -30,7 +32,8 @@ import GameState from "../models/GameState";
 @Component({
   components: {
     Button,
-    PlayerList
+    PlayerList,
+    GameStateDisplay
   }
 })
 export default class extends Vue {
