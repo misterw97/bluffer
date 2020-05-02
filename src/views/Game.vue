@@ -3,25 +3,20 @@
     <h1>Jeu #{{ player.game }}</h1>
     <h2>{{ player.name }}: {{ player.isMaster }}</h2>
     <h3 v-if="!!game">Tour #{{game.count+1}}</h3>
-    <div v-if="(!game)||(game.state=='w')">
-      waiting animation... {{ game }}// TODO
-    </div>
-    <component v-else v-bind:is="gameView"
-      :player="player"
-      :game="game" >
-    </component>
+    <div v-if="(!game)||(game.state=='w')">waiting animation... {{ game }}// TODO</div>
+    <component v-else v-bind:is="gameView" :player="player" :game="game" @data="nextStep"></component>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { Socket } from 'vue-socket.io-extended'
+import { Socket } from "vue-socket.io-extended";
 import QuestionMaster from "./QuestionMaster.vue";
 import AnswersMaster from "./AnswersMaster.vue";
 import Button from "../components/Button.vue";
 import Player from "../models/Player";
 import Game from "../models/Game";
-import GameState from '../models/GameState';
+import GameState from "../models/GameState";
 
 @Component({
   components: {
@@ -29,11 +24,9 @@ import GameState from '../models/GameState';
   }
 })
 export default class extends Vue {
-  private player: Player|null = null;
-  private game: Game|null = null;
-  private gameView: null|
-    typeof QuestionMaster|
-    typeof AnswersMaster = null;
+  private player: Player | null = null;
+  private game: Game | null = null;
+  private gameView: null | typeof QuestionMaster | typeof AnswersMaster = null;
 
   @Socket()
   state(data: any) {
@@ -61,6 +54,10 @@ export default class extends Vue {
       (player: Player) => (this.player = player)
     );
   }
+
+  nextStep(data: any) {
+    this.$socket.client.emit('data', data);
+  }
 }
 </script>
 
@@ -69,5 +66,15 @@ export default class extends Vue {
 .game {
   flex: 1;
   padding: 30px;
+  text-align: left;
+
+  h1 {
+    margin-bottom: 0;
+  }
+
+  h3 {
+    margin-top: 40px;
+    margin-bottom: 30px;
+  }
 }
 </style>
