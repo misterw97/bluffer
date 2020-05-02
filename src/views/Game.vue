@@ -3,7 +3,7 @@
     <h1>Jeu #{{ player.game }}</h1>
     <h2>{{ player.name }}: {{ player.isMaster }}</h2>
 
-    <div v-if="state='w'">
+    <div v-if="gameState='w'">
       waiting animation... // TODO
     </div>
 
@@ -18,6 +18,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
+import { Socket } from 'vue-socket.io-extended'
 import Button from "../components/Button.vue";
 import Player from "../models/Player";
 
@@ -36,7 +37,16 @@ enum GameState {
 })
 export default class Game extends Vue {
   private player: Player|null = null;
-  private state: GameState = GameState.waiting;
+  private gameState: GameState = GameState.waiting;
+
+  @Socket()
+  state(data: any) {
+    console.log('test', data);
+  }
+
+  sendQuestion() {
+    
+  }
 
   mounted() {
     const gameId = this.$route.params.game;

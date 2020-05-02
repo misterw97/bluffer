@@ -44,13 +44,22 @@ class Game {
         if (!player)
             throw new Error(`Player #${id} not found.`);
         player.socket = socket.id;
-        // socket.emit(this.state); TODO: emit it on 'game' channel as welcome message? onjoin?
+        this.emitState();
         socket.join(this.id);
         return player;
+    }
+    
+    emitState(socket = Game.io.to(this.id)) {
+        console.log('game', this.state);
+        socket.emit('state', this.state);
     }
 
     static get(id) {
         return getGame(id);
+    }
+
+    static boot(io) {
+        this.io = io;
     }
 }
 
