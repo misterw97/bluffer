@@ -39,7 +39,7 @@ interface IAnswer { player: Player; answer: string }
     Answer
   }
 })
-export default class extends Vue {
+export default class AnswersMaster extends Vue {
   @Prop() private player!: Player;
   @Prop() private game!: Game;
   private realAnswerValue = "";
