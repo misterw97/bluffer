@@ -1,14 +1,15 @@
 <template>
   <div class="answer">
     <div class="header">
-      <p>{{ title }}</p>
+      <p>
+        {{ title }}
+        <span v-if="isNew&&!hasBeenClicked" @click="hasBeenClicked=true">non lu</span>
+      </p>
       <div v-if="showControls&&!canEdit" class="controls">
         <a @click="edit()">modifier</a>
         <!-- <a>merge</a> -->
       </div>
-      <Button @click="save()" v-if="canEdit">
-        Enregistrer
-      </Button>
+      <Button @click="save()" v-if="canEdit">Enregistrer</Button>
     </div>
     <textarea v-model="field" :disabled="!(!disabled||canEdit)" :placeholder="placeholder"></textarea>
   </div>
@@ -16,7 +17,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
-import Button from './Button.vue';
+import Button from "./Button.vue";
 
 @Component({
   components: {
@@ -29,7 +30,10 @@ export default class extends Vue {
   @Prop() private placeholder?: string;
   @Prop() private disabled?: boolean;
   @Prop() private showControls?: boolean;
+  @Prop() private isNew?: boolean;
+  private hasBeenClicked: boolean = false;
 
+  private valueBeforeEdit: string = "";
   private canEdit: boolean = false;
   private fieldValue: string;
 
@@ -38,19 +42,23 @@ export default class extends Vue {
     this.fieldValue = this.value || "";
   }
 
-  @Watch('value')
+  @Watch("value")
   onValueChanged(val: string, oldVal: string) {
+    this.hasBeenClicked = this.fieldValue == val;
     this.fieldValue = val;
   }
 
   save() {
-    if (this.value !== this.fieldValue) {
+    if (this.valueBeforeEdit !== this.fieldValue) {
+      console.log("EDIT");
       this.$emit("edit", this.fieldValue);
     }
+    this.hasBeenClicked = true;
     this.canEdit = false;
   }
 
   edit() {
+    this.valueBeforeEdit = this.fieldValue;
     this.canEdit = true;
   }
 
@@ -75,6 +83,16 @@ export default class extends Vue {
       margin: 0;
       text-align: left;
       margin-bottom: 10px;
+
+      span {
+        margin-left: 10px;
+        padding: 0 10px;
+        background: $primary;
+        color: white;
+        @include round;
+        border: none;
+        cursor: pointer;
+      }
     }
   }
   textarea {

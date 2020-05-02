@@ -7,16 +7,17 @@
       key="firstAnswer"
       v-model="firstAnswer"
       title="Invente une réponse"
-      placeholder="Ta réponse doit être crédible pour les autres. Attention, la vraie réponse est souvent farfelue..."
+      placeholder="Ta réponse doit être crédible pour les autres, paraître être vraie mais ne doit pas être la bonne réponse ! Attention, la vraie réponse est souvent farfelue..."
     ></Answer>
 
     <Answer
-      v-if="reviewedAnswer!=''"
+      v-if="unsentReview"
       v-model="reviewedAnswer"
       title="Le maître du jeu a revu ta réponse, tu peux encore la modifier:"
+      placeholder="Le maître du jeu peut revoir une réponse pour la rendre plus crédible, plus ressemblante aux autres ou l'associer à une similaire (peut être la vraie?)."
     ></Answer>
 
-    <Button v-show="(!sent)||(reviewedAnswer!='')" @click="sendAnswer()">Envoyer</Button>
+    <Button v-show="(!sent)||unsentReview" @click="sendAnswer()">Envoyer</Button>
   </div>
 </template>
 
@@ -45,9 +46,11 @@ export default class AnswersPlayer extends Vue {
   private firstAnswer: string = "";
   private reviewedAnswer: string = "";
   private sent: boolean = false;
+  private unsentReview: boolean = false;
 
   @Socket()
   bluff(data: any) {
+    this.unsentReview = true;
     this.reviewedAnswer = data;
   }
 
@@ -57,6 +60,7 @@ export default class AnswersPlayer extends Vue {
     if (this.sent) {
       this.firstAnswer = this.reviewedAnswer;
       this.reviewedAnswer = "";
+      this.unsentReview = false;
     } else {
       // TODO: check callback and md5 hash to mark as sent
       this.sent = true;

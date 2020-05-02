@@ -10,7 +10,8 @@
       :disabled="true"
       :key="answer.player.id"
       :title="answer.player.name"
-      :value="answer.bluff"
+      v-model="answer.bluff"
+      :isNew="true"
       @edit="edit(answer, $event)"
     ></Answer>
   </div>
@@ -41,15 +42,15 @@ export default class AnswersMaster extends Vue {
   private realAnswerValue = "";
 
   private answers: Array<Bluff> = [
-    {
-      player: {
-        name: 'test',
-        id: 'test', 
-        game: '',
-        score: 0,
-      },
-      bluff: 'test string'
-    }
+    // {
+    //   player: {
+    //     name: 'test',
+    //     id: 'test', 
+    //     game: '',
+    //     score: 0,
+    //   },
+    //   bluff: 'test string'
+    // }
   ];
 
   edit(answer: Bluff, bluff: string) {
@@ -61,6 +62,7 @@ export default class AnswersMaster extends Vue {
 
   @Socket()
   bluff(b: Bluff) {
+    console.log(b);
     this.answers = this.answers.filter(a => a.player.id != b.player.id);
     this.answers.push(b);
   }
