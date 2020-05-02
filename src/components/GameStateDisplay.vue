@@ -24,6 +24,7 @@ export default class extends Vue {
 <style lang="scss" scoped>
 .main {
   display: flex;
+  margin-top: 10px;
 
   .state {
     background-color: white;
@@ -32,9 +33,14 @@ export default class extends Vue {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: 20px;
+    margin-right: 5px;
     position: relative;
-    padding: 0 15px;
+    padding: 0 5px;
+
+    @include sm {
+      margin-right: 20px;
+      padding: 0 15px;
+    }
 
     &.disabled {
       border-color: $darkgrey;
@@ -44,10 +50,15 @@ export default class extends Vue {
     &::after {
       content: "";
       height: 3px;
-      width: 20px;
+      width: 5px;
       background-color: $darkgrey;
       position: absolute;
-      right: -23px;
+      right: -8px;
+
+      @include sm {
+        width: 20px;
+        right: -23px;
+      }
     }
 
     &:last-of-type {

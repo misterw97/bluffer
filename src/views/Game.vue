@@ -2,12 +2,15 @@
   <main>
     <div v-if="!!player&&!!game" class="game">
       <div class="row">
-        <h1 v-if="player.isMaster">Jeu #{{ player.game }}</h1>
-        <h1 v-else>{{ player.name }}</h1>
+        <div class="col">
+          <h1 v-if="player.isMaster">Jeu #{{ player.game }}</h1>
+          <h1 v-else>{{ player.name }}</h1>
+
+          <h2 v-if="player.isMaster">{{ player.name }} (Maître de jeu)</h2>
+          <h2 v-else>Bluffer #{{ player.game }}</h2>
+        </div>
         <GameStateDisplay :state="game.state" />
       </div>
-      <h2 v-if="player.isMaster">{{ player.name }} (Maître de jeu)</h2>
-      <h2 v-else>Bluffer #{{ player.game }}</h2>
 
       <div class="header">
         <h3 v-if="!!game">Tour #{{game.count+1}}</h3>
@@ -118,7 +121,7 @@ main {
     .row {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      flex-wrap: wrap;
     }
 
     h1 {
@@ -135,7 +138,7 @@ main {
     display: none;
 
     @include md {
-        display: unset;
+      display: unset;
     }
   }
 
