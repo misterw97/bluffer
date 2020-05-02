@@ -31,18 +31,18 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-  console.log('a user connected: ' + socket.id);
-  socket.on('join', (data, callback) => {
+  console.log(`a user connected: ${socket.id}`);
+  socket.on('join', async (data, callback) => {
     // join with player data: { id?, game?, name }
     let game;
     let player;
     try {
       if (!data.game) {
-        game = new Game();
+        game = await Game.generate();
         console.log('game', game);
         player = game.master(data, socket);
       } else {
-        game = Game.get(data.game);
+        game = await Game.getFromDB(data.game);
         if (!game) throw new Error(`Game #${data.game} does not exist.`);
         player = game.player(data, socket)
       }

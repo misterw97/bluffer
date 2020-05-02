@@ -3,7 +3,6 @@ const { randomInt } = require('./utils');
 
 class Game {
     constructor() {
-        this._generateId();
         this.players = {};
         this.state = {
             id: 'q',
@@ -11,11 +10,11 @@ class Game {
         };
     }
 
-    _generateId() {
+    async _generateId() {
         this.id = randomInt(100000, 999999);
-        if (!!getGame(this.id))
+        if (!!await getGame(this.id))
             return this._generateId();
-        setGame(this.id, this);
+        await setGame(this.id, this);
         return;
     }
 
@@ -29,28 +28,46 @@ class Game {
     }
 
     master(...data) {
-        const player = this.player(...data);
-        player.isMaster = true;
+        const player = this.player(...data, true);
         return player;
     }
 
-    player({ name, id }, socket) {
+    player({ name, id }, socket, isMaster = false) {
         let player;
         if (!id) {
-            player = this._createPlayer({ name });
+            player = this._createPlayer({ name, isMaster });
         } else {
             player = this.players[id];
         }
         if (!player)
             throw new Error(`Player #${id} not found.`);
         player.socket = socket.id;
+        this._save();
         // socket.emit(this.state); TODO: emit it on 'game' channel as welcome message? onjoin?
         socket.join(this.id);
         return player;
     }
 
-    static get(id) {
-        return getGame(id);
+    async _save() {
+        await setGame(this.id, this);
+    }
+
+    static mapFromDB(data) {
+        const game = new Game();
+        game.players = data.players;
+        game.state = data.state;
+        return game;
+    }
+
+    static async getFromDB(id) {
+        const db = await getGame(id);
+        return Game.mapFromDB(db);
+    }
+
+    static async generate() {
+        const game = new Game();
+        await game._generateId();
+        return game;
     }
 }
 
