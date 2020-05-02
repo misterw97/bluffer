@@ -44,10 +44,12 @@ io.on('connection', (socket) => {
         game = await Game.getFromDB(data.game);
         if (!game) throw new Error(`Game #${data.game} does not exist.`);
         player = game.player(data, socket)
+        game.emitScores();
       }
       console.log('player', player);
       callback(player);
       game.emitState(socket);
+      game.emitScores(socket);
     } catch (e) {
       console.error(e);
     }

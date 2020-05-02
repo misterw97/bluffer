@@ -56,10 +56,21 @@ class Game {
         socket.join(this.id);
         return player;
     }
-    
+
     emitState(socket = Game.io.to(this.id)) {
-        console.log('game', this.state);
+        console.log('game state', this.state);
         socket.emit('state', this.state);
+    }
+
+    emitScores(socket = Game.io.to(this.id)) {
+        const scores = {};
+        const game = this;
+        Object.keys(this.players).forEach(playerId => {
+            const player = game.players[playerId];
+            scores[player.id] = player.score || 0;
+        });
+        console.log('game scores', scores);
+        socket.emit('scores', scores);
     }
 
     async _save() {
