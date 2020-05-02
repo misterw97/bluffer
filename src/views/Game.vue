@@ -2,41 +2,51 @@
   <div v-if="!!player" class="game">
     <h1>Jeu #{{ player.game }}</h1>
     <h2>{{ player.name }}: {{ player.isMaster }}</h2>
-
-    <div v-if="state='w'">
-      waiting animation... // TODO
+    <div v-if="(!game)||(game.state=='w')">
+      waiting animation... {{ game }}// TODO
     </div>
-
-    <h2>Tour #1</h2>
-    <Button>Ouvrir les réponses</Button>
-    <h3>Question</h3>
-    <textarea placeholder="La question originale" />
-    <h3>Réponse (vraie)</h3>
-    <textarea placeholder="La vraie réponse à la question" />
+    <component v-else v-bind:is="gameView"
+      :player="player"
+      :game="game" >
+    </component>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
+import { Socket } from 'vue-socket.io-extended'
+import QuestionMaster from "./QuestionMaster.vue";
+import AnswersMaster from "./AnswersMaster.vue";
 import Button from "../components/Button.vue";
 import Player from "../models/Player";
-
-enum GameState {
-  waiting = 'w',
-  question = 'q',
-  answers = 'a',
-  votes = 'v',
-  results = 'r'
-}
+import Game from "../models/Game";
+import GameState from '../models/GameState';
 
 @Component({
   components: {
     Button
   }
 })
-export default class Game extends Vue {
+export default class extends Vue {
   private player: Player|null = null;
-  private state: GameState = GameState.waiting;
+  private game: Game|null = null;
+  private gameView: null|
+    typeof QuestionMaster|
+    typeof AnswersMaster = null;
+
+  @Socket()
+  state(data: any) {
+    this.game = data as Game;
+    // TODO move /views/master/QuestionMaster.vue
+    // TODO move /views/player/QuestionPlayer.vue
+    switch (this.game.state) {
+      case GameState.question:
+        this.gameView = QuestionMaster;
+        break;
+      case GameState.answers:
+        this.gameView = AnswersMaster;
+    }
+  }
 
   mounted() {
     const gameId = this.$route.params.game;
@@ -55,12 +65,4 @@ export default class Game extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-textarea {
-  margin-bottom: 10px;
-  padding: 10px;
-  border: 2px solid $secondary;
-  border-radius: 5px;
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  font-size: 1em;
-}
 </style>

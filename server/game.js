@@ -1,12 +1,21 @@
 const { getGame, setGame } = require('./datasource');
 const { randomInt } = require('./utils');
 
+const State = {
+    waiting: 'w',
+    question: 'q',
+    answers: 'a',
+    votes: 'v',
+    results: 'r'
+}
+
 class Game {
     constructor() {
         this.players = {};
         this.state = {
-            id: 'q',
-            name: 'question'
+            state: State.question,
+            count: 0,
+            data: {}
         };
     }
 
@@ -43,9 +52,13 @@ class Game {
             throw new Error(`Player #${id} not found.`);
         player.socket = socket.id;
         this._save();
-        // socket.emit(this.state); TODO: emit it on 'game' channel as welcome message? onjoin?
         socket.join(this.id);
         return player;
+    }
+    
+    emitState(socket = Game.io.to(this.id)) {
+        console.log('game', this.state);
+        socket.emit('state', this.state);
     }
 
     async _save() {
@@ -68,6 +81,10 @@ class Game {
         const game = new Game();
         await game._generateId();
         return game;
+    }
+
+    static boot(io) {
+        this.io = io;
     }
 }
 

@@ -2,6 +2,7 @@ const app = require('express')();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 const { Game } = require('./game');
+Game.boot(io);
 
 const getPlayer = (roomId, id) => {
   const room = getRoom(roomId);
@@ -32,24 +33,33 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
   console.log(`a user connected: ${socket.id}`);
+  let game;
+  let player;
+  // join with player data: { id?, game?, name }
   socket.on('join', async (data, callback) => {
-    // join with player data: { id?, game?, name }
-    let game;
-    let player;
     try {
       if (!data.game) {
         game = await Game.generate();
-        console.log('game', game);
         player = game.master(data, socket);
       } else {
         game = await Game.getFromDB(data.game);
         if (!game) throw new Error(`Game #${data.game} does not exist.`);
         player = game.player(data, socket)
       }
-      console.log(player);
+      console.log('player', player);
       callback(player);
-    } catch (e) { callback(e) }
+      game.emitState(socket);
+    } catch (e) {
+      console.error(e);
+    }
   })
+
+  socket.on('data', (data) => {
+    game.state.state = 'a';
+    game.state.data = data;
+    console.log('new state', game.state);
+    game.emitState();
+  });
 });
 
 http.listen(3000, () => {
