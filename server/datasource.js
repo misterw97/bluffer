@@ -1,6 +1,7 @@
 const { promisify } = require("util");
 const redis = require("redis");
-const client = redis.createClient({ host: "192.168.1.63", detect_buffers: true });
+const host = process.env.REDIS_HOST || "192.168.1.63";
+const client = redis.createClient({ host, detect_buffers: true });
 const getAsync = promisify(client.get).bind(client);
 
 const getGame = (id) => {
