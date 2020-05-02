@@ -29,7 +29,7 @@
   textarea {
     margin-bottom: 10px;
     padding: 10px;
-    border: 3px solid $secondary;
+    @include border;
     font-family: Avenir, Helvetica, Arial, sans-serif;
     font-size: 1.3em;
     outline: none;

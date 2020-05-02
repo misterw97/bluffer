@@ -1,0 +1,9 @@
+@mixin border {
+  border: 3px solid $secondary;
+
+}
+
+@mixin round {
+  @include border;
+  border-radius: 15px;
+}

@@ -28,8 +28,8 @@ export default class Button extends Vue {
   justify-content: center;
   color: white;
   font-weight: bold;
-  border: 3px solid $secondary;
-  border-radius: 15px;
+  @include round;
+
   &:hover {
     cursor: pointer;
   }
