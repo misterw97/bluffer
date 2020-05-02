@@ -63,7 +63,7 @@ class Game {
                 this._handleAnswerData(data);
                 break;
         }
-        game.emitState();
+        this.emitState();
     }
 
     _handleQuestionData(data) {
