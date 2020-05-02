@@ -71,9 +71,23 @@ io.on('connection', (socket) => {
     }
   });
 
+  socket.on('message', async (data) => {
+    const game = await Game.getFromDB(gameId);
+    const player = game.getPlayer(playerId);
+    if (!player.isMaster) {
+      console.warn('A non-master sent data!');
+      return;
+    };
+    const playerTo = game.getPlayer(data.to);
+    if (!playerTo) { 
+      console.error(`no player with id ${data.to}`); 
+      return; 
+    };
+    game.updatePlayerBluff(playerTo, data.message, true);
+  });
+
   socket.on('bluff', async (data) => {
     const game = await Game.getFromDB(gameId);
-    console.log('game', game);
     const player = game.getPlayer(playerId);
     game.updatePlayerBluff(player, data);
   });

@@ -6,10 +6,12 @@
 
     <Answer
       v-for="answer in answers"
+      :showControls="true"
       :disabled="true"
       :key="answer.player.id"
       :title="answer.player.name"
       :value="answer.bluff"
+      @edit="edit(answer, $event)"
     ></Answer>
   </div>
 </template>
@@ -38,11 +40,27 @@ export default class AnswersMaster extends Vue {
   @Prop() private game!: Game;
   private realAnswerValue = "";
 
-  private answers: Array<Bluff> = [];
+  private answers: Array<Bluff> = [
+    {
+      player: {
+        name: 'test',
+        id: 'test', 
+        game: '',
+        score: 0,
+      },
+      bluff: 'test string'
+    }
+  ];
+
+  edit(answer: Bluff, bluff: string) {
+    this.$socket.client.emit('message', {
+      to: answer.player.id,
+      message: bluff
+    })
+  }
 
   @Socket()
   bluff(b: Bluff) {
-    console.log('new bluff', b);
     this.answers = this.answers.filter(a => a.player.id != b.player.id);
     this.answers.push(b);
   }
