@@ -59,6 +59,7 @@ io.on('connection', (socket) => {
     // TODO: check data against game progression and player rights
     game.state.state = 'a';
     game.state.data = data;
+    game._save();
     console.log('new state', game.state);
     game.emitState();
 

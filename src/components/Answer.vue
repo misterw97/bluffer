@@ -4,7 +4,7 @@
     <textarea
     v-model="field"
     :disabled="!!disabled"
-    placeholder="La vraie réponse">
+    :placeholder="placeholder">
     </textarea>
   </div>
 </template>
@@ -16,6 +16,7 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 export default class extends Vue {
   @Prop() private title!: string;
   @Prop() private value?: string;
+  @Prop() private placeholder?: string;
   @Prop() private disabled?: boolean;
   private fieldValue?: string;
 
