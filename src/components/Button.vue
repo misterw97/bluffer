@@ -1,5 +1,5 @@
 <template>
-  <div @click="myMethod()" class="button">
+  <div @click="myMethod()" class="button" v-bind:class="{ disabled }">
     <slot></slot>
   </div>
 </template>
@@ -9,8 +9,11 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 
 @Component
 export default class Button extends Vue {
+  @Prop() private disabled?: boolean;
+
   myMethod() {
-    this.$emit("click");
+    if (!!!this.disabled)
+      this.$emit("click");
   }
 }
 </script>
@@ -32,6 +35,11 @@ export default class Button extends Vue {
 
   &:hover {
     cursor: pointer;
+  }
+
+  &.disabled {
+    cursor: unset;
+    background-color: $darkgrey;
   }
 }
 </style>
