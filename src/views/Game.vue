@@ -17,7 +17,7 @@
       <div v-if="(!game)||(game.state=='w')">waiting animation... {{ game }}// TODO</div>
       <component v-else v-bind:is="gameView" :player="player" :game="game" @data="updateData"></component>
     </div>
-    <PlayerList v-show="!!player" :player="player" />
+    <PlayerList class="player-list" v-show="!!player" :player="player" />
   </main>
 </template>
 
@@ -128,6 +128,14 @@ main {
     h3 {
       margin-top: 40px;
       margin-bottom: 30px;
+    }
+  }
+
+  .player-list {
+    display: none;
+
+    @include md {
+        display: unset;
     }
   }
 
