@@ -12,6 +12,12 @@ const State = {
 const MIN_LENGTH = 3;
 
 class Game {
+
+    id;
+    masterId;
+    players;
+    state;
+
     constructor() {
         this.players = {};
         this._newState();
@@ -49,11 +55,6 @@ class Game {
         return player;
     }
 
-    master(...data) {
-        const player = this.player(...data, true);
-        return player;
-    }
-
     pass(data) {
         switch (this.state.state) {
             case State.question:
@@ -88,24 +89,46 @@ class Game {
         this._save();
     }
 
+    updatePlayerBluff(player, bluff) {
+        this.state.lock.bluffs[player.id] = bluff;
+        this._save();
+        console.log('master', this.getMaster());
+        Game.io.to(this.getMaster().socket).emit('bluff', {
+            player,
+            bluff
+        });
+    }
+
+    master(...data) {
+        return this.player(...data, true);
+    }
+
     player({ name, id }, socket, isMaster = false) {
         let player;
-        if (!id) {
+        if (!id)
             player = this._createPlayer({ name, isMaster });
-        } else {
+        else
             player = this.players[id];
-        }
         if (!player)
             throw new Error(`Player #${id} not found.`);
         player.socket = socket.id;
         player.score = player.score || 0;
+        if (isMaster)
+            this.masterId = player.id;
         this._save();
         socket.join(this.id);
         return player;
     }
 
+    getPlayer(id) {
+        return this.players[id];
+    }
+
+    getMaster() {
+        return this.getPlayer(this.masterId);
+    }
+
     emitState(socket = Game.io.to(this.id)) {
-        console.log('game state', this.state);
         socket.emit('state', { ...this.state, lock: undefined });
     }
 
@@ -116,7 +139,6 @@ class Game {
             const player = game.players[playerId];
             if (!player.isMaster) scores.push(player);
         });
-        console.log('game scores', scores);
         socket.emit('scores', scores);
     }
 
@@ -126,9 +148,7 @@ class Game {
 
     static mapFromDB(data) {
         const game = new Game();
-        game.players = data.players;
-        game.state = data.state;
-        game.id = data.id;
+        Object.assign(game, data);
         return game;
     }
 

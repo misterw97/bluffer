@@ -23,7 +23,6 @@ export default class Button extends Vue {
 .button {
   box-sizing: border-box;
   width: 100%;
-  height: 100%;
   background-color: $primary;
   padding: 20px 10px;
   display: flex;

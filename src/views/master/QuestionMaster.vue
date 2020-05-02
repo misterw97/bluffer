@@ -18,7 +18,7 @@ import Game from "../../models/Game";
     Answer
   }
 })
-export default class extends Vue {
+export default class QuestionMaster extends Vue {
   @Prop() private player!: Player;
   @Prop() private game!: Game;
   private questionValue: string = "";

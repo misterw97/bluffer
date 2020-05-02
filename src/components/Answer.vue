@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 
 @Component
 export default class extends Vue {
@@ -20,10 +20,20 @@ export default class extends Vue {
   @Prop() private value?: string;
   @Prop() private placeholder?: string;
   @Prop() private disabled?: boolean;
-  private fieldValue?: string;
+  private fieldValue: string;
+
+  constructor() {
+    super();
+    this.fieldValue = this.value || "";
+  }
+
+  @Watch('value')
+  onValueChanged(val: string, oldVal: string) {
+    this.fieldValue = val;
+  }
 
   get field() {
-    return this.fieldValue || this.value || "";
+    return this.fieldValue;
   }
   set field(value: string) {
     this.fieldValue = value;

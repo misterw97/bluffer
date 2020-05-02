@@ -32,10 +32,11 @@ app.use(express.static(__dirname + '/../dist'));
 
 io.on('connection', (socket) => {
   console.log(`a user connected: ${socket.id}`);
-  let game;
-  let player;
+  let gameId;
+  let playerId;
   // join with player data: { id?, game?, name }
   socket.on('join', async (data, callback) => {
+    let game, player;
     try {
       if (!data.game) {
         game = await Game.generate();
@@ -47,15 +48,18 @@ io.on('connection', (socket) => {
         game.emitScores();
       }
       console.log('player', player);
+      gameId = game.id;
+      playerId = player.id;
       callback(player);
       game.emitState(socket);
-      game.emitScores(socket);
     } catch (e) {
       console.error(e);
     }
   })
 
-  socket.on('data', (data) => {
+  socket.on('data', async (data) => {
+    const game = await Game.getFromDB(gameId);
+    const player = game.getPlayer(playerId);
     if (!player.isMaster) {
       console.warn('A non-master sent data!');
       return;
@@ -65,6 +69,13 @@ io.on('connection', (socket) => {
     } catch (e) {
       console.error(e);
     }
+  });
+
+  socket.on('bluff', async (data) => {
+    const game = await Game.getFromDB(gameId);
+    console.log('game', game);
+    const player = game.getPlayer(playerId);
+    game.updatePlayerBluff(player, data);
   });
 });
 
