@@ -18,7 +18,7 @@ class Game {
     }
 
     _newState() {
-        const lastCount = this.state?.count || 0;
+        const lastCount = (this.state ? this.state.count : undefined) || 0;
         this.state = {
             state: State.question,
             count: lastCount + 1,
