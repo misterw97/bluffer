@@ -32,7 +32,7 @@ class Game {
         const playerId = randomInt(1000000, 9999999);
         if (!!this.players[playerId])
             return this._createPlayer(data);
-        const player = { ...data, id: playerId, game: this.id };
+        const player = { ...data, id: playerId, game: this.id, score: 0 };
         this.players[playerId] = player;
         return player;
     }
@@ -52,6 +52,7 @@ class Game {
         if (!player)
             throw new Error(`Player #${id} not found.`);
         player.socket = socket.id;
+        player.score = player.score || 0;
         this._save();
         socket.join(this.id);
         return player;
@@ -63,11 +64,11 @@ class Game {
     }
 
     emitScores(socket = Game.io.to(this.id)) {
-        const scores = {};
+        const scores = [];
         const game = this;
         Object.keys(this.players).forEach(playerId => {
             const player = game.players[playerId];
-            scores[player.id] = player.score || 0;
+            if (!player.isMaster) scores.push(player);
         });
         console.log('game scores', scores);
         socket.emit('scores', scores);

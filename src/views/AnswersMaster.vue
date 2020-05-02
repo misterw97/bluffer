@@ -52,6 +52,7 @@ export default class extends Vue {
           id: '123456abc',
           name: 'Isabelle',
           game: '',
+          score: 0,
         },
         answer: 'La réponse de Isabelle'
       },
@@ -60,6 +61,7 @@ export default class extends Vue {
           id: '123edaf',
           name: 'Roger',
           game: '',
+          score: 0,
         },
         answer: 'La réponse de Roger'
       }

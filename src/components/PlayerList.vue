@@ -1,0 +1,79 @@
+<template>
+  <div class="player-list">
+    <div class="title">Players</div>
+
+    <div
+      v-for="p in players"
+      v-bind:class="{ active: player.id === p.id }"
+      class="player"
+      :key="p.id"
+    >
+      <img :src="`https://api.adorable.io/avatars/50/${p.id}`" :alt="`Avatar de ${p.name}`" />
+      <div class="info">
+        <div>{{ p.name }}</div>
+        <div>{{ p.score }}pts</div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { Component, Prop, Vue } from "vue-property-decorator";
+import { Socket } from "vue-socket.io-extended";
+import Player from "../models/Player";
+
+@Component({
+  components: {}
+})
+export default class extends Vue {
+  @Prop() private player!: Player;
+  private players: Player[] = [];
+
+  @Socket()
+  scores(data: Player[]) {
+    this.players = [...data].sort((a, b) => b.score - a.score);
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style lang="scss" scoped>
+$margin: 20px;
+
+.player-list {
+  width: 300px;
+  height: 100vh;
+  background-color: white;
+  color: $primary;
+  font-weight: bold;
+
+  .title {
+    margin: 0;
+    text-align: right;
+    font-size: 2em;
+    padding: $margin $margin 35px;
+  }
+
+  .player {
+    display: flex;
+    align-items: center;
+    font-size: 1.5em;
+    padding: 15px $margin;
+
+    img {
+      border-radius: 50%;
+      margin-right: $margin;
+    }
+
+    .info {
+      display: flex;
+      justify-content: space-between;
+      flex: 1;
+    }
+
+    &.active {
+      background-color: $grey;
+    }
+  }
+}
+</style>
