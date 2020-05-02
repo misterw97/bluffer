@@ -7,17 +7,11 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { Socket } from "vue-socket.io-extended";
-import Button from "../../components/Button.vue";
-import Answer from "../../components/Answer.vue";
-import Player from "../../models/Player";
 import Game from "../../models/Game";
 import Ink from "../../assets/ink.svg";
 
 @Component({
   components: {
-    Button,
-    Answer,
     Ink
   }
 })
