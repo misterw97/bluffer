@@ -3,9 +3,14 @@
     <div v-if="!!player" class="game">
       <h1>Jeu #{{ player.game }}</h1>
       <h2>{{ player.name }}: {{ player.isMaster }}</h2>
-      <h3 v-if="!!game">Tour #{{game.count+1}}</h3>
+
+      <div class="header">
+        <h3 v-if="!!game">Tour #{{game.count+1}}</h3>
+        <Button v-if="!!action" id="fab" @click="sendData()">{{ action }}</Button>
+      </div>
+
       <div v-if="(!game)||(game.state=='w')">waiting animation... {{ game }}// TODO</div>
-      <component v-else v-bind:is="gameView" :player="player" :game="game" @data="nextStep"></component>
+      <component v-else v-bind:is="gameView" :player="player" :game="game" @data="updateData"></component>
     </div>
     <PlayerList v-show="!!player" :player="player" />
   </main>
@@ -32,6 +37,8 @@ export default class extends Vue {
   private player: Player | null = null;
   private game: Game | null = null;
   private gameView: null | typeof QuestionMaster | typeof AnswersMaster = null;
+  private action?: string;
+  private data?: any;
 
   @Socket()
   state(data: any) {
@@ -40,9 +47,11 @@ export default class extends Vue {
     // TODO move /views/player/QuestionPlayer.vue
     switch (this.game.state) {
       case GameState.question:
+        this.action = "Ouvrir les réponses";
         this.gameView = QuestionMaster;
         break;
       case GameState.answers:
+        this.action = "Ouvrir le vote";
         this.gameView = AnswersMaster;
     }
   }
@@ -60,8 +69,13 @@ export default class extends Vue {
     );
   }
 
-  nextStep(data: any) {
-    this.$socket.client.emit("data", data);
+  sendData() {
+    this.$socket.client.emit("data", this.data);
+    this.data = {};
+  }
+
+  private updateData(data: any) {
+    this.data = data;
   }
 }
 </script>
@@ -85,6 +99,12 @@ main {
       margin-top: 40px;
       margin-bottom: 30px;
     }
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 }
 </style>

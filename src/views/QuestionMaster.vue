@@ -1,11 +1,6 @@
 <template>
   <div class="question">
-    <Button id="fab" @click="sendQuestion()">Ouvrir les réponses</Button>
-    <Answer
-      v-model="question"
-      title="Question"
-      placeholder="Question originale"
-    ></Answer>
+    <Answer v-model="question" title="Question" placeholder="Question originale"></Answer>
   </div>
 </template>
 
@@ -26,12 +21,17 @@ import Game from "../models/Game";
 export default class extends Vue {
   @Prop() private player!: Player;
   @Prop() private game!: Game;
-  private question: string = "";
+  private questionValue: string = "";
 
-  sendQuestion() {
-      this.$emit('data', {
-          question: this.question
-      });
+  private get question() {
+    return this.questionValue;
+  }
+
+  private set question(question: string) {
+    this.questionValue = question;
+    this.$emit("data", {
+      question
+    });
   }
 }
 </script>
