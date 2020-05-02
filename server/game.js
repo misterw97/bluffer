@@ -20,10 +20,11 @@ class Game {
     }
 
     async _generateId() {
-        this.id = randomInt(100000, 999999);
-        if (!!await getGame(this.id))
+        const id = randomInt(100000, 999999);
+        if (!!await getGame(id))
             return this._generateId();
-        await setGame(this.id, this);
+        this.id = id;
+        await this._save();
         return;
     }
 
@@ -69,6 +70,7 @@ class Game {
         const game = new Game();
         game.players = data.players;
         game.state = data.state;
+        game.id = data.id;
         return game;
     }
 
