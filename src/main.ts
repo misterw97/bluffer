@@ -4,7 +4,7 @@ import router from './router'
 import VueSocketIOExt from 'vue-socket.io-extended';
 import io from 'socket.io-client';
  
-const socket = io(process.env.BASE_URL);
+const socket = io(process.env.NODE_ENV === 'development'?'http://localhost:3000':'/');
  
 Vue.use(VueSocketIOExt, socket);
 
