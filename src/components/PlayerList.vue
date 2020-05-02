@@ -46,6 +46,7 @@ $margin: 20px;
   background-color: white;
   color: $primary;
   font-weight: bold;
+  min-height: 100%;
 
   .title {
     margin: 0;

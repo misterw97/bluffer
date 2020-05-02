@@ -1,8 +1,10 @@
 <template>
   <main>
-    <GameStateDisplay />
     <div v-if="!!player" class="game">
-      <h1>Jeu #{{ player.game }}</h1>
+      <div class="row">
+        <h1>Jeu #{{ player.game }}</h1>
+        <GameStateDisplay :state="game.state" />
+      </div>
       <h2>{{ player.name }}: {{ player.isMaster }}</h2>
 
       <div class="header">
@@ -40,7 +42,7 @@ export default class extends Vue {
   private player: Player | null = null;
   private game: Game | null = null;
   private gameView: null | typeof QuestionMaster | typeof AnswersMaster = null;
-  private action: string = '';
+  private action: string = "";
   private data?: any;
 
   @Socket()
@@ -93,6 +95,12 @@ main {
     flex: 1;
     padding: 30px;
     text-align: left;
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
     h1 {
       margin-bottom: 0;

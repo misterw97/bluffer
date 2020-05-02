@@ -1,27 +1,22 @@
 <template>
   <div class="main">
-    <div class="state">Question</div>
-    <div class="state">Réponses</div>
-    <div class="state">Votes</div>
-    <div class="state">Résultats</div>
+    <div class="state" v-bind:class="{ disabled: state !== 'q' }">Question</div>
+    <div class="state" v-bind:class="{ disabled: state !== 'a' }">Réponses</div>
+    <div class="state" v-bind:class="{ disabled: state !== 'v' }">Votes</div>
+    <div class="state" v-bind:class="{ disabled: state !== 'r' }">Résultats</div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { Socket } from "vue-socket.io-extended";
-import GameState from '../models/GameState';
+import GameState from "../models/GameState";
+import Game from '../models/Game';
 
 @Component({
   components: {}
 })
 export default class extends Vue {
-  @Prop() private _state!: GameState;  
-
-  @Socket()
-  state(data: any) {
-    console.log(data);
-  }
+  @Prop() private state!: GameState;
 }
 </script>
 
@@ -31,7 +26,37 @@ export default class extends Vue {
   display: flex;
 
   .state {
-    background-color: lawngreen;
+    background-color: white;
+    height: 30px;
+    @include round;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 20px;
+    position: relative;
+    padding: 0 15px;
+
+    &.disabled {
+      border-color: $darkgrey;
+      background-color: $grey;
+    }
+
+    &::after {
+      content: "";
+      height: 3px;
+      width: 20px;
+      background-color: $darkgrey;
+      position: absolute;
+      right: -23px;
+    }
+
+    &:last-of-type {
+      margin: 0;
+
+      &::after {
+        width: 0;
+      }
+    }
   }
 }
 </style>
