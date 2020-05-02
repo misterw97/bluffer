@@ -18,6 +18,7 @@ export default class HelloWorld extends Vue {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
 .button {
+  box-sizing: border-box;
   width: 100%;
   height: 100%;
   background-color: $primary;

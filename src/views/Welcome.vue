@@ -2,12 +2,12 @@
   <div class="hello">
     <h1>Bienvenue au Bluffer!</h1>
 
-    <p>Quel est ton prénom?</p>
+    <h2>Quel est ton prénom?</h2>
     <input type="text" v-model="name" placeholder="Jean-Pierre" />
     <Button v-if="!join" @click="createNewGame()">Créer un nouveau jeu</Button>
     <Button v-if="!join">Rejoindre une partie</Button>
 
-    <p v-if="join">Quel est le code de la partie?</p>
+    <h2 v-if="join">Quel est le code de la partie?</h2>
     <input v-if="join" type="text" v-model="code" placeholder="123456" />
     <Button v-if="join">Rejoindre</Button>
   </div>
@@ -63,24 +63,14 @@ export default class Welcome extends Vue {
   margin: auto;
   display: flex;
 
-  h1 {
-    font-size: 2.7em;
-    color: $primary;
-  }
-
-  p {
-    margin: 0;
-    font-size: 1.3em;
-  }
-
   .button,
-  input, p {
+  input, h2 {
     margin-top: 20px;
   }
 
   .button {
     width: 90%;
-    align-self: flex-end;
+    align-self: center;
     font-size: 1.3em;
   }
 
@@ -88,12 +78,5 @@ export default class Welcome extends Vue {
     width: 100%;
   }
 }
-input {
-  margin-bottom: 10px;
-  padding: 10px;
-  border: 3px solid $secondary;
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  font-size: 1.3em;
-  outline: none;
-}
+
 </style>

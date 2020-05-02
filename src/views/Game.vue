@@ -2,6 +2,7 @@
   <div v-if="!!player" class="game">
     <h1>Jeu #{{ player.game }}</h1>
     <h2>{{ player.name }}: {{ player.isMaster }}</h2>
+    <h3 v-if="!!game">Tour #{{game.count+1}}</h3>
     <div v-if="(!game)||(game.state=='w')">
       waiting animation... {{ game }}// TODO
     </div>
@@ -65,4 +66,8 @@ export default class extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
+.game {
+  flex: 1;
+  padding: 30px;
+}
 </style>

@@ -1,14 +1,22 @@
 <template>
   <div class="answers">
-    <h2>Tour #{{game.count+1}}</h2>
     <Button @click="sendQuestion()">Ouvrir le vote</Button>
-    <h3>Question</h3>
-    <textarea disabled :value="game.data.question" />
+    
+    <Answer
+      :disabled="true"
+      :value="game.data.question"
+      title="Question"
+    ></Answer>
+
+    <Answer
+      v-model="realAnswer"
+      title="Réponse (vraie)"
+    ></Answer>
     
     <textarea v-for="answer in answers"
     disabled
     :key="answer.player.id"
-    :value="answer.answer" />
+    :value="answer.answer"></textarea>
     
   </div>
 </template>
@@ -17,21 +25,24 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Socket } from "vue-socket.io-extended";
 import Button from "../components/Button.vue";
+import Answer from "../components/Answer.vue";
 import Player from "../models/Player";
 import Game from "../models/Game";
 
-interface Answer { player: Player; answer: string }
+interface IAnswer { player: Player; answer: string }
 
 @Component({
   components: {
-    Button
+    Button,
+    Answer
   }
 })
 export default class extends Vue {
   @Prop() private player!: Player;
   @Prop() private game!: Game;
+  private realAnswer = "";
 
-  private answers: Array<Answer> = [
+  private answers: Array<IAnswer> = [
     {
         player: {
           id: '123456abc',
@@ -51,7 +62,7 @@ export default class extends Vue {
   ];
 
   @Socket()
-  message(data: Answer) {
+  message(data: IAnswer) {
     console.log(data);
     this.answers.push(data);
   }
@@ -60,12 +71,4 @@ export default class extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-textarea {
-  margin-bottom: 10px;
-  padding: 10px;
-  border: 2px solid $secondary;
-  border-radius: 5px;
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  font-size: 1em;
-}
 </style>

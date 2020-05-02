@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
@@ -12,5 +12,35 @@
   text-align: center;
   color: #2c3e50;
   display: flex;
+
+  h1 {
+    font-size: 2.7em;
+    color: $primary;
+  }
+
+  h2 {
+    margin: 0;
+    font-weight: normal;
+    font-size: 1.3em;
+  }
+
+  input,
+  textarea {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 3px solid $secondary;
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    font-size: 1.3em;
+    outline: none;
+    box-sizing: border-box;
+
+    &:disabled {
+      background: $grey;
+      border-color: $darkgrey;
+    }
+  }
+}
+body {
+  background: $grey;
 }
 </style>
