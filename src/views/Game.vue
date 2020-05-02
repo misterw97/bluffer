@@ -6,7 +6,7 @@
 
       <div class="header">
         <h3 v-if="!!game">Tour #{{game.count+1}}</h3>
-        <Button v-if="!!action" id="fab" @click="sendData()">{{ action }}</Button>
+        <Button v-if="action!=''" id="fab" @click="sendData()">{{ action }}</Button>
       </div>
 
       <div v-if="(!game)||(game.state=='w')">waiting animation... {{ game }}// TODO</div>
@@ -19,8 +19,8 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Socket } from "vue-socket.io-extended";
-import QuestionMaster from "./QuestionMaster.vue";
-import AnswersMaster from "./AnswersMaster.vue";
+import QuestionMaster from "./master/QuestionMaster.vue";
+import AnswersMaster from "./master/AnswersMaster.vue";
 import PlayerList from "../components/PlayerList.vue";
 import Button from "../components/Button.vue";
 import Player from "../models/Player";
@@ -37,7 +37,7 @@ export default class extends Vue {
   private player: Player | null = null;
   private game: Game | null = null;
   private gameView: null | typeof QuestionMaster | typeof AnswersMaster = null;
-  private action?: string;
+  private action: string = '';
   private data?: any;
 
   @Socket()
