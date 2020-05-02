@@ -1,7 +1,5 @@
 <template>
-  <div class="answers">
-    <Button id="fab" @click="sendAnswer()">Ouvrir le vote</Button>
-    
+  <div class="answers">    
     <Answer
       :disabled="true"
       :value="game.data.question"
@@ -44,7 +42,7 @@ interface IAnswer { player: Player; answer: string }
 export default class extends Vue {
   @Prop() private player!: Player;
   @Prop() private game!: Game;
-  private realAnswer = "";
+  private realAnswerValue = "";
 
   private answers: Array<IAnswer> = [
     {
@@ -73,10 +71,15 @@ export default class extends Vue {
     this.answers.push(data);
   }
 
-  sendAnswer() {
-    this.$emit('data', {
-      answer: this.realAnswer
-    })
+  private get realAnswer() {
+    return this.realAnswerValue;
+  }
+
+  private set realAnswer(answer: string) {
+    this.realAnswerValue = answer;
+    this.$emit("data", {
+      answer
+    });
   }
 }
 </script>

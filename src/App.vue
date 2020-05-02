@@ -42,11 +42,11 @@
 
   #fab {
     width: 300px;
-    float: right;
+    // float: right;
     position: relative;
     height: 50px;
     right: 0;
-    top: -70px;
+    // top: -70px;
   }
 }
 body {

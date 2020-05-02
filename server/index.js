@@ -60,7 +60,11 @@ io.on('connection', (socket) => {
       console.warn('A non-master sent data!');
       return;
     };
-    game.pass(data);
+    try {
+      game.pass(data);
+    } catch (e) {
+      console.error(e);
+    }
   });
 });
 
