@@ -11,12 +11,16 @@
     <Answer
       v-model="realAnswer"
       title="Réponse (vraie)"
+      placeholder="La vraie réponse du jeu"
     ></Answer>
     
-    <textarea v-for="answer in answers"
-    disabled
-    :key="answer.player.id"
-    :value="answer.answer"></textarea>
+    <Answer
+      v-for="answer in answers"
+      :disabled="true"
+      :key="answer.player.id"
+      :title="answer.player.name"
+      :value="answer.answer"
+    ></Answer>
     
   </div>
 </template>
