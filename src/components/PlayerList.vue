@@ -42,12 +42,12 @@ export default class extends Vue {
 $margin: 20px;
 
 .player-list {
-  width: 320px;
+  min-width: 320px;
+  min-height: 100%;
   height: 100vh;
   background-color: white;
   color: $primary;
   font-weight: bold;
-  min-height: 100%;
 
   .title {
     margin: 0;

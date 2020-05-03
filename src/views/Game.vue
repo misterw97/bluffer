@@ -117,7 +117,7 @@ main {
   width: 100%;
 
   .game {
-    flex: 1;
+    flex: 3;
     padding: 30px;
     text-align: left;
     display: flex;
@@ -141,6 +141,7 @@ main {
 
   .player-list {
     display: none;
+    flex: 1;
 
     @include md {
       display: unset;
