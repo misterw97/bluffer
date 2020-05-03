@@ -47,7 +47,6 @@ io.on('connection', (socket) => {
         player = game.player(data, socket)
         game.emitScores();
       }
-      console.log('player', player);
       gameId = game.id;
       playerId = player.id;
       callback(player);
@@ -78,18 +77,24 @@ io.on('connection', (socket) => {
       console.warn('A non-master sent data!');
       return;
     };
-    const playerTo = game.getPlayer(data.to);
-    if (!playerTo) { 
-      console.error(`no player with id ${data.to}`); 
-      return; 
-    };
-    game.updatePlayerBluff(playerTo, data.message, true);
+    game.updatePlayerBluff(data.to, data.message, true);
   });
 
-  socket.on('bluff', async (data) => {
-    const game = await Game.getFromDB(gameId);
-    const player = game.getPlayer(playerId);
-    game.updatePlayerBluff(player, data);
+  socket.on('bluff', async (data, callback) => {
+    try {
+      const game = await Game.getFromDB(gameId);
+      const hash = game.updatePlayerBluff(playerId, data);
+      callback(hash);
+    } catch (e) { console.error(e); }
+  });
+
+  socket.on('vote', async (data, callback) => {
+    try {
+      const game = await Game.getFromDB(gameId);
+      const result = game.registerVote(playerId, data);
+      console.log('vote', result);
+      callback(result);
+    } catch (e) { console.error(e); }
   });
 });
 

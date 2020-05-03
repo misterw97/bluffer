@@ -33,6 +33,7 @@ import Answer from "./Avatar.vue";
 import Avatar from "./Avatar.vue";
 import Button from "./Button.vue";
 import Player from "../models/Player";
+import Vote from "../models/Vote";
 
 @Component({
   components: {
@@ -44,7 +45,7 @@ import Player from "../models/Player";
 export default class extends Vue {
   @Prop() private disabled?: boolean;
   @Prop() private responses!: any[];
-  @Prop() private votes!: any[];
+  @Prop() private votes!: Vote[];
   @Prop() private player!: Player;
 
   click(data: any) {
@@ -52,15 +53,15 @@ export default class extends Vue {
   }
 
   getMyVote() {
-    return this.votes.find(vote => vote.player.id === this.player.id);
+    return this.votes.find(vote => vote.playerId === this.player.id);
   }
 
   getMyPointsPerResponse(response: any) {
     if (response.author === this.player.id) {
-      return 2 * this.votes.filter(v => v.responseId === response.id).length;
+      return 2 * this.votes.filter(v => v.voteId === response.id).length;
     } else if (!!response.good) {
       const vote = this.getMyVote();
-      return vote.responseId === response.id ? 1 : 0;
+      return vote?.voteId === response.id ? 1 : 0;
     }
     return 0;
   }

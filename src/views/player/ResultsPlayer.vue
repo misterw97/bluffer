@@ -11,6 +11,7 @@ import Answer from "../../components/Answer.vue";
 import AnswerGroup from "../../components/AnswerGroup.vue";
 import Game from "../../models/Game";
 import Player from "../../models/Player";
+import Vote from "../../models/Vote";
 
 @Component({
   components: {
@@ -38,11 +39,11 @@ export default class extends Vue {
     { good: true, author: "2", id: 3, title: "Réponse 3, la vraie" }
   ];
 
-  votes: any[] = [
-    { responseId: 1, player: { name: "Valentin", id: 1000000 } },
-    { responseId: 2, player: { name: "Roger", id: 2000000 } },
-    { responseId: 2, player: { name: "François", id: 3000000 } },
-    { responseId: 3, player: this.player }
+  votes: Vote[] = [
+    { voteId: "1", playerId: "1000000" },
+    { voteId: "2", playerId: "2000000" },
+    { voteId: "2", playerId: "3000000" },
+    { voteId: "3", playerId: this.player.id }
   ];
 }
 </script>

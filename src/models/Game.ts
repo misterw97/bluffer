@@ -1,6 +1,14 @@
 import GameState from './GameState';
 
-interface GameData {}
+interface GameAnswer {
+    hash: string;
+    value: string;
+}
+
+interface GameData {
+    question?: string;
+    answers?: 
+}
 
 export default interface Game {
     state: GameState,

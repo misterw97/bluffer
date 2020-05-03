@@ -16,6 +16,7 @@ import Answer from "../../components/Answer.vue";
 import AnswerGroup from "../../components/AnswerGroup.vue";
 import Game from "../../models/Game";
 import Player from "../../models/Player";
+import Vote from "../../models/Vote";
 
 @Component({
   components: {
@@ -27,16 +28,29 @@ export default class extends Vue {
   @Prop() private game!: Game;
   @Prop() private player!: Player;
 
-  responses = [
-    { id: 1, title: "Réponse 1, credible mais bon, on a quand même un doute" },
-    { id: 2, title: "Réponse 2, la mienne", disabled: true },
-    { id: 3, title: "Réponse 3, la vraie" }
-  ];
+  private responses = [];
 
-  votes: any[] = [];
+  mounted() {
+    if (this.player.voteId)
+      this.votes = [{ voteId: this.player.voteId, playerId: this.player.id }];
+
+    this.responses = this.game.data.answers.map(
+      ({ hash, value }: { hash: string; value: string }) => ({
+        id: hash,
+        title: value,
+        disabled: hash == this.player.answerId || !!this.player.isMaster
+      })
+    );
+  }
+
+  votes: Vote[] = [];
 
   vote(response: any) {
-    this.votes = [{ responseId: response.id, player: this.player }];
+    this.$socket.client.emit("vote", response.id, (data: string) => {
+      if (data == "OK: " + response.id)
+        this.votes = [{ voteId: response.id, playerId: this.player.id }];
+      else this.votes = [];
+    });
   }
 }
 </script>
