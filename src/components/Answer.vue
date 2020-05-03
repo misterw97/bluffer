@@ -51,6 +51,7 @@ export default class extends Vue {
   save() {
     if (this.valueBeforeEdit !== this.fieldValue) {
       this.$emit("edit", this.fieldValue);
+      this.$emit("input", this.fieldValue);
     }
     this.hasBeenClicked = true;
     this.canEdit = false;
@@ -66,7 +67,7 @@ export default class extends Vue {
   }
   set field(value: string) {
     this.fieldValue = value;
-    this.$emit("input", value);
+    if (!this.showControls) this.$emit("input", value);
   }
 }
 </script>

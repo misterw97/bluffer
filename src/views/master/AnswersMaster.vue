@@ -41,17 +41,7 @@ export default class AnswersMaster extends Vue {
   @Prop() private game!: Game;
   private realAnswerValue = "";
 
-  private answers: Array<Bluff> = [
-    // {
-    //   player: {
-    //     name: 'test',
-    //     id: 'test', 
-    //     game: '',
-    //     score: 0,
-    //   },
-    //   bluff: 'test string'
-    // }
-  ];
+  private answers: Bluff[] = [];
 
   edit(answer: Bluff, bluff: string) {
     this.$socket.client.emit('message', {

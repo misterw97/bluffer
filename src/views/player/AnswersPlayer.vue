@@ -3,11 +3,13 @@
     <Answer :disabled="true" :value="game.data.question" title="Question"></Answer>
 
     <Answer
-      :disabled="sent"
       key="firstAnswer"
-      v-model="firstAnswer"
       title="Invente une réponse"
       placeholder="Ta réponse doit être crédible pour les autres, paraître être vraie mais ne doit pas être la bonne réponse ! Attention, la vraie réponse est souvent farfelue..."
+      v-model="firstAnswer"
+      :disabled="sent"
+      :showControls="sent && !unsentReview"
+      @edit="editAnswer"
     ></Answer>
 
     <Answer
@@ -58,20 +60,27 @@ export default class AnswersPlayer extends Vue {
     });
   }
 
+  editAnswer(bluff: string) {
+    this.sendBluff(bluff, false);
+  }
+
   sendAnswer() {
     const bluff = this.sent ? this.reviewedAnswer : this.firstAnswer;
+    this.sendBluff(bluff, this.sent);
+  }
+
+  sendBluff(bluff: string, review = false) {
     this.$socket.client.emit("bluff", bluff, (hash: string) => {
       this.$emit("data", {
         answer: bluff,
         answerHash: hash
       });
-      if (this.sent) {
+      if (review) {
         this.firstAnswer = this.reviewedAnswer;
         this.reviewedAnswer = "";
         this.unsentReview = false;
-      } else {
-        this.sent = true;
       }
+      this.sent = true;
     });
   }
 }
