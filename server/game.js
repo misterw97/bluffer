@@ -212,7 +212,7 @@ class Game {
         const game = this;
         Object.keys(this.players).forEach(playerId => {
             const player = game.players[playerId];
-            if (!player.isMaster) scores.push({...player, answerId: undefined});
+            if (!player.isMaster && !player.name === 'Partie') scores.push({...player, answerId: undefined});
         });
         socket.emit('scores', scores);
     }
