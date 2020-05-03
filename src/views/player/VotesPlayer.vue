@@ -17,7 +17,7 @@ import AnswerGroup from "../../components/AnswerGroup.vue";
 import Game from "../../models/Game";
 import Player from "../../models/Player";
 import Vote from "../../models/Vote";
-import ResponseType from "../../models/ResponseType";
+import GameAnswer from '../../models/GameAnswer';
 
 @Component({
   components: {
@@ -29,7 +29,7 @@ export default class extends Vue {
   @Prop() private game!: Game;
   @Prop() private player!: Player;
 
-  private responses: Array<ResponseType> = [];
+  private responses: Array<GameAnswer> = [];
 
   mounted() {
     if (this.player.voteId)
@@ -38,8 +38,8 @@ export default class extends Vue {
     this.responses = this.game.data.answers!.map(
       ({ hash, value }: { hash: string; value: string }) => {
         return {
-          id: hash,
-          title: value,
+          hash,
+          value,
           disabled: hash === this.player.answerId || !!this.player.isMaster
         };
       }

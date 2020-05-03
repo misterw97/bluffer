@@ -100,8 +100,10 @@ class Game {
         }
         for (let player in bluffs) {
             if (player == 0) continue;
-            extAnswers[bluffs[player]].authors.push(player);
-            this.players[player].score += 2*extAnswers[bluffs[player]].votes.length;
+            const author = this.players[player];
+            extAnswers[bluffs[player]].authors.push(author);
+            if (bluffs[player] !== goodHash)
+                author.score += 2 * extAnswers[bluffs[player]].votes.length;
         }
         this.state.data.answers = Object.values(extAnswers);
         this.state.state = State.results;
@@ -131,7 +133,7 @@ class Game {
             lock.bluffs[player] = hash;
         }
         this.state.data.answers = Object.entries(lock.answers)
-            .map((a)=>({hash: a[0], value: a[1]})).sort((a,b)=>a.hash>b.hash?1:-1);
+            .map((a) => ({ hash: a[0], value: a[1] })).sort((a, b) => a.hash > b.hash ? 1 : -1);
         this.state.state = State.votes;
         this._save();
     }
@@ -171,7 +173,7 @@ class Game {
         lock[player.id] = answerId;
         player.voteId = answerId;
         this._save();
-        return 'OK: '+answerId;
+        return 'OK: ' + answerId;
     }
 
     master(...data) {
@@ -203,7 +205,7 @@ class Game {
         return this.getPlayer(this.masterId);
     }
 
-    emitState(socket = Game.io.to(this.id)) {        
+    emitState(socket = Game.io.to(this.id)) {
         socket.emit('state', { ...this.state, lock: undefined });
     }
 
@@ -212,7 +214,7 @@ class Game {
         const game = this;
         Object.keys(this.players).forEach(playerId => {
             const player = game.players[playerId];
-            if (!player.isMaster && player.name !== 'Partie') scores.push({...player, answerId: undefined});
+            if (!player.isMaster && player.name !== 'Partie') scores.push({ ...player, answerId: undefined });
         });
         socket.emit('scores', scores);
     }
