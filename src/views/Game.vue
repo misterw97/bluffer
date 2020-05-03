@@ -134,6 +134,7 @@ main {
 
       a {
         color: $primary;
+        text-decoration: none;
       }
     }
 
