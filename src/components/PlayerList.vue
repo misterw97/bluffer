@@ -53,7 +53,7 @@ $margin: 20px;
     margin: 0;
     text-align: right;
     font-size: 2em;
-    padding: $margin $margin 35px;
+    padding: $padding $margin 35px;
   }
 
   .player {

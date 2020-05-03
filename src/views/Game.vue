@@ -118,7 +118,7 @@ main {
 
   .game {
     flex: 3;
-    padding: 30px;
+    padding: $padding;
     text-align: left;
     display: flex;
     flex-direction: column;
