@@ -28,10 +28,11 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { Socket } from "vue-socket.io-extended";
 import QuestionPlayer from "./player/QuestionPlayer.vue";
+import AnswersPlayer from "./player/AnswersPlayer.vue";
 import VotesPlayer from "./player/VotesPlayer.vue";
+import ResultsPlayer from "./player/ResultsPlayer.vue";
 import QuestionMaster from "./master/QuestionMaster.vue";
 import AnswersMaster from "./master/AnswersMaster.vue";
-import AnswersPlayer from "./player/AnswersPlayer.vue";
 import PlayerList from "../components/PlayerList.vue";
 import GameStateDisplay from "../components/GameStateDisplay.vue";
 import Button from "../components/Button.vue";
@@ -44,7 +45,8 @@ type GameViewType =
   | typeof AnswersMaster
   | typeof QuestionPlayer
   | typeof AnswersPlayer
-  | typeof VotesPlayer;
+  | typeof VotesPlayer
+  | typeof ResultsPlayer;
 
 @Component({
   components: {
