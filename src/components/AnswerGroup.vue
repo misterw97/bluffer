@@ -15,7 +15,7 @@
             v-for="vote in votes.filter(vote => vote.voteId === response.hash)"
             :key="vote.playerId"
             :size="35"
-            :playerId="vote.player.id"
+            :player="vote.player"
           />
         </div>
         <div class="authors">
@@ -25,7 +25,7 @@
             class="avatar"
             :key="a.id"
             :size="25"
-            :playerId="a.id"
+            :player="a"
           />
         </div> 
       </div>

@@ -1,5 +1,13 @@
 <template>
-  <div v-if="!!playerId" v-bind:style="`width:${size}px;height:${size}px`" class="avatar" v-html="svg" />
+  <main>
+    <div
+      v-if="!!player"
+      v-bind:style="`width:${size}px;height:${size}px`"
+      class="avatar"
+      v-html="svg"
+    />
+    <div v-if="!!player && !!player.done" class="done" />
+  </main>
 </template>
 
 <script lang="ts">
@@ -12,7 +20,7 @@ import Player from "../models/Player";
   components: {}
 })
 export default class extends Vue {
-  @Prop() private playerId!: string;
+  @Prop() private player!: Player;
   @Prop() private size!: number;
 
   options = {
@@ -21,10 +29,10 @@ export default class extends Vue {
     background: this.getBackground()
   };
   avatars = new Avatars(sprites, this.options);
-  svg = this.avatars.create(this.playerId);
+  svg = this.avatars.create(this.player.id);
 
   getBackground() {
-    const background = Math.floor(parseInt(this.playerId) / 10);
+    const background = Math.floor(parseInt(this.player.id) / 10);
     return `#${background}`;
   }
 }
@@ -32,8 +40,22 @@ export default class extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-.avatar {
-  border: 1px solid white;
-  border-radius: 50%;
+main {
+  position: relative;
+
+  .avatar {
+    border: 1px solid white;
+    border-radius: 50%;
+  }
+
+  .done {
+    position: absolute;
+    background-color: $green;
+    width: 15px;
+    height: 15px;
+    right: 0;
+    border-radius: 50%;
+    bottom: -3px;
+  }
 }
 </style>
