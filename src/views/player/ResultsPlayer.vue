@@ -26,17 +26,15 @@ export default class extends Vue {
   responses = [
     {
       good: false,
-      author: "1",
       id: 1,
       title: "Réponse 1, credible mais bon, on a quand même un doute"
     },
     {
       good: false,
-      author: this.player.id,
       id: 2,
       title: "Réponse 2, la mienne"
     },
-    { good: true, author: "2", id: 3, title: "Réponse 3, la vraie" }
+    { good: true, id: 3, title: "Réponse 3, la vraie" }
   ];
 
   votes: Vote[] = [

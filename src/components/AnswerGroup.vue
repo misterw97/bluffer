@@ -57,7 +57,7 @@ export default class extends Vue {
   }
 
   getMyPointsPerResponse(response: any) {
-    if (response.author === this.player.id) {
+    if (response.id === this.player.answerId) {
       return 2 * this.votes.filter(v => v.voteId === response.id).length;
     } else if (!!response.good) {
       const vote = this.getMyVote();
