@@ -46,6 +46,7 @@ export default class extends Vue {
   votes: Vote[] = [];
 
   vote(response: any) {
+    this.$emit("data", { voteId: response.id });
     this.$socket.client.emit("vote", response.id, (data: string) => {
       if (data == "OK: " + response.id)
         this.votes = [{ voteId: response.id, playerId: this.player.id }];

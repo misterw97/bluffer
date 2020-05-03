@@ -64,8 +64,45 @@ class Game {
             case State.answers:
                 this._handleAnswerData(data);
                 break;
+            case State.votes:
+                this._handleVotesData(data);
+                break;
         }
         this.emitState();
+    }
+
+    _handleVotesData() {
+        const lock = this.state.lock;
+
+        const votes = lock.votes;
+        const answers = lock.answers;
+        const bluffs = lock.bluffs;
+
+        const extAnswers = {};
+
+        for (let hash in answers) {
+            extAnswers[hash] = {
+                hash,
+                value: answers[hash],
+                authors: [],
+                votes: [],
+                good: bluffs[0] === hash
+            }
+        }
+        const goodHash = lock.bluffs[0];
+        for (let player in votes) {
+            extAnswers[votes[player]].votes.push(this.players[player]);
+            if (votes[player] === goodHash) this.players[player].score += 1;
+        }
+        for (let player in bluffs) {
+            if (player == 0) continue;
+            extAnswers[bluffs[player]].authors.push(player);
+            this.players[player].score += 2*extAnswers[bluffs[player]].votes.length;
+        }
+        this.state.data.answers = Object.values(extAnswers);
+        this.state.state = State.results;
+        this._save();
+        this.emitScores();
     }
 
     _handleQuestionData(data) {
@@ -126,6 +163,8 @@ class Game {
             throw new Error(`Cannot find player #${player.id}.`);
         if (player.answerId == answerId)
             throw new Error('A player cannot vote for himself');
+        const lock = this.state.lock.votes;
+        lock[player.id] = answerId;
         player.voteId = answerId;
         this._save();
         return 'OK: '+answerId;
