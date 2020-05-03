@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!!playerId" v-bind:style="`width:${size}px`" class="avatar" v-html="svg" />
+  <div v-if="!!playerId" v-bind:style="`width:${size}px;height:${size}px`" class="avatar" v-html="svg" />
 </template>
 
 <script lang="ts">
