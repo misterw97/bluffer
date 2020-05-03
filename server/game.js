@@ -24,6 +24,12 @@ class Game {
         this._newState();
     }
 
+    _resetPlayersDoneState() {
+        for (let id in this.players) {
+            this.players[id].done = false;
+        }
+    }
+
     _newState() {
         const lastCount = (!!this.state && this.state.count >= 0) ? this.state.count : -1;
         this.state = {
@@ -68,6 +74,7 @@ class Game {
                 this._handleVotesData(data);
                 break;
             case State.results:
+                this._resetPlayersDoneState();
                 this._newState();
                 this._save();
                 break;
@@ -107,6 +114,7 @@ class Game {
         }
         this.state.data.answers = Object.values(extAnswers);
         this.state.state = State.results;
+        this._resetPlayersDoneState();
         this._save();
         this.emitScores();
     }
@@ -135,7 +143,9 @@ class Game {
         this.state.data.answers = Object.entries(lock.answers)
             .map((a) => ({ hash: a[0], value: a[1] })).sort((a, b) => a.hash > b.hash ? 1 : -1);
         this.state.state = State.votes;
+        this._resetPlayersDoneState();
         this._save();
+        this.emitScores();
     }
 
     _hash(data) {
@@ -149,7 +159,9 @@ class Game {
         this.state.lock.bluffs[player.id] = bluff;
         const hash = this._hash(bluff);
         player.answerId = hash;
+        player.done = !fromMaster;
         this._save();
+        this.emitScores();
         if (fromMaster)
             Game.io.to(player.socket).emit('bluff', {
                 hash,
@@ -172,7 +184,9 @@ class Game {
         const lock = this.state.lock.votes;
         lock[player.id] = answerId;
         player.voteId = answerId;
+        player.done = true;
         this._save();
+        this.emitScores();
         return 'OK: ' + answerId;
     }
 

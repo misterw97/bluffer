@@ -7,4 +7,5 @@ export default interface Player {
     isMaster?: boolean;
     answerId?: string;
     voteId?: string;
+    done?: boolean;
 }
