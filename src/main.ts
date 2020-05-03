@@ -8,6 +8,7 @@ const socket = io(process.env.NODE_ENV === 'development'?'http://localhost:3000'
  
 Vue.use(VueSocketIOExt, socket);
 
+Vue.config.ignoredElements = ['lottie-player'];
 Vue.config.productionTip = false
 
 new Vue({

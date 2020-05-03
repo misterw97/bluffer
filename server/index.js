@@ -37,6 +37,7 @@ io.on('connection', (socket) => {
   // join with player data: { id?, game?, name }
   socket.on('join', async (data, callback) => {
     let game, player;
+    console.log('join', data);
     try {
       if (!data.game) {
         game = await Game.generate();

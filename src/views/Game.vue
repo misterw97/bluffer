@@ -20,6 +20,17 @@
       <component v-bind:is="gameView" :player="player" :game="game" @data="updateData"></component>
     </div>
     <PlayerList class="player-list" v-show="!!player" :player="player" />
+
+    <div v-if="!player || !game" id="game-loader" class="loader">
+      <lottie-player
+        :src="`${publicPath}load-bar.json`"
+        background="transparent"
+        speed="1"
+        style="width: 300px; height: 300px;"
+        loop
+        autoplay
+      ></lottie-player>
+    </div>
   </main>
 </template>
 
@@ -60,6 +71,7 @@ export default class GameView extends Vue {
   private gameView: GameViewType | null = null;
   private action: string = "";
   private data?: any = {};
+  private publicPath = process.env.BASE_URL;
 
   @Socket()
   state(data: any) {
@@ -75,7 +87,8 @@ export default class GameView extends Vue {
         break;
       case GameState.votes:
         this.action = "Fermer le vote";
-        if (!!this.data.answerHash) this.player!.answerId = this.data.answerHash;
+        if (!!this.data.answerHash)
+          this.player!.answerId = this.data.answerHash;
         this.gameView = VotesPlayer;
         break;
       case GameState.results:
@@ -86,7 +99,7 @@ export default class GameView extends Vue {
     }
   }
 
-  mounted() {
+  private join() {
     const gameId = this.$route.params.game;
     const playerId = this.$route.params.player;
     this.$socket.client.emit(
@@ -97,6 +110,15 @@ export default class GameView extends Vue {
       },
       (player: Player) => (this.player = player)
     );
+  }
+
+  mounted() {
+    this.join();
+  }
+
+  @Socket()
+  reconnect() {
+    this.join();
   }
 
   sendData() {
@@ -158,6 +180,11 @@ main {
     display: flex;
     align-items: center;
     justify-content: space-between;
+  }
+
+  #game-loader {
+    z-index: 1;
+    background: white;
   }
 }
 </style>

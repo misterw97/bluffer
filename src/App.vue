@@ -1,8 +1,41 @@
 <template>
   <div id="app">
+    <div v-show="!connected" class="loader">
+      <lottie-player
+        src="https://assets7.lottiefiles.com/packages/lf20_1uKnRo.json"
+        background="transparent"
+        speed="1"
+        style="width: 300px; height: 300px;"
+        loop
+        autoplay
+      ></lottie-player>
+      <!-- TODO: inclure conseils comme refresh page -->
+    </div>
     <router-view />
   </div>
 </template>
+
+<script lang="ts">
+import { Component, Prop, Vue } from "vue-property-decorator";
+import { Socket } from "vue-socket.io-extended";
+
+@Component
+export default class App extends Vue {
+  private connected: boolean = false;
+
+  @Socket()
+  connect() {
+    console.log("connection established");
+    this.connected = true;
+  }
+
+  @Socket()
+  disconnect() {
+    console.log("disconnect");
+    this.connected = false;
+  }
+}
+</script>
 
 <style lang="scss">
 #app {
@@ -41,13 +74,17 @@
     }
   }
 
-  #fab {
-    width: 300px;
-    // float: right;
-    position: relative;
-    height: 50px;
+  div.loader {
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    left: 0;
     right: 0;
-    // top: -70px;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.2);
   }
 }
 body {

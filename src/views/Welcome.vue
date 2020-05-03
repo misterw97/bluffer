@@ -16,8 +16,8 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import Button from "../components/Button.vue";
 import { Socket } from "vue-socket.io-extended";
+import Button from "../components/Button.vue";
 
 @Component({
   components: {
@@ -28,11 +28,6 @@ export default class Welcome extends Vue {
   private join = false;
   private name = "";
   private code = "";
-
-  @Socket() // --> listens to the event by method name, e.g. `connect`
-  connect() {
-    console.log("connection established");
-  }
 
   mounted() {
     if (!!this.$route.query.code) {
