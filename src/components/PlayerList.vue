@@ -8,7 +8,7 @@
       class="player"
       :key="p.id"
     >
-      <Avatar :size="50" :playerId="p.id" />
+      <Avatar class="avatar" :size="50" :playerId="p.id" />
       <div class="info">
         <div>{{ p.name }}</div>
         <div>{{ p.score }}pts</div>
@@ -62,7 +62,7 @@ $margin: 20px;
     font-size: 1.5em;
     padding: 15px $margin;
 
-    img {
+    .avatar {
       border-radius: 50%;
       margin-right: $margin;
     }
