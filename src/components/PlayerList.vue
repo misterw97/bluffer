@@ -10,7 +10,8 @@
     >
       <Avatar class="avatar" :size="50" :playerId="p.id" />
       <div class="info">
-        <div>{{ p.name }}</div>
+        <a :href="`/#/game/${p.game}/player/${p.id}`" v-if="player.isMaster">{{ p.name }}</a>
+        <div v-else>{{ p.name }}</div>
         <div>{{ p.score }}pts</div>
       </div>
     </div>
@@ -71,6 +72,11 @@ $margin: 20px;
       display: flex;
       justify-content: space-between;
       flex: 1;
+
+      a {
+        text-decoration: none;
+        color: $primary;
+      }
     }
 
     &.active {
