@@ -65,9 +65,10 @@ export default class extends Vue {
   get field() {
     return this.fieldValue;
   }
+
   set field(value: string) {
-    this.fieldValue = value;
-    if (!this.showControls) this.$emit("input", value);
+    this.fieldValue = value.trim();
+    if (!this.showControls) this.$emit("input", this.fieldValue);
   }
 }
 </script>
