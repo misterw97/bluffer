@@ -60,8 +60,7 @@ export default class extends Vue {
     if (response.id === this.player.answerId) {
       return 2 * this.votes.filter(v => v.voteId === response.id).length;
     } else if (!!response.good) {
-      const vote = this.getMyVote();
-      return vote?.voteId === response.id ? 1 : 0;
+      return response.votes.some((vote: Player) => vote.id === this.player.id) ? 1 : 0;
     }
     return 0;
   }
