@@ -34,6 +34,13 @@ export default class Welcome extends Vue {
     console.log("connection established");
   }
 
+  mounted() {
+    if (!!this.$route.query.code) {
+      this.code = this.$route.query.code as string;
+      this.join = true;
+    }
+  }
+
   get codeIsValid() {
     return /^[0-9]{6}$/.test(this.code);
   }
