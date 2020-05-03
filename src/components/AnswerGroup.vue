@@ -1,9 +1,9 @@
 <template>
   <main>
     <div class="responses">
-      <div v-for="response in responses" :key="response.id" class="response">
+      <div v-for="response in responses" :key="response.hash" class="response">
         <Button
-          @click="click(response)"
+          @vote="vote(response)"
           :disabled="!!disabled || response.disabled"
         >{{response.value}}</Button>
         <div
@@ -49,8 +49,8 @@ export default class extends Vue {
   @Prop() private votes!: Player[];
   @Prop() private player!: Player;
 
-  click(response: GameAnswer) {
-    if (!this.disabled) this.$emit("click", response);
+  vote(response: GameAnswer) {
+    if (!this.disabled) this.$emit("vote", response);
   }
 
   getMyPointsPerResponse(response: GameAnswer) {
