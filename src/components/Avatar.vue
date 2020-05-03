@@ -20,7 +20,7 @@ export default class extends Vue {
 
   getBackground() {
     const background = Math.floor(parseInt(this.player.id) / 10);
-    return `%23${background}`
+    return `%23${background}`;
   }
 }
 </script>
@@ -28,6 +28,7 @@ export default class extends Vue {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
 img {
+  border: 1px solid white;
   border-radius: 50%;
 }
 </style>
