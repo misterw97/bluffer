@@ -61,7 +61,6 @@ export default class AnswersPlayer extends Vue {
   sendAnswer() {
     const bluff = this.sent ? this.reviewedAnswer : this.firstAnswer;
     this.$socket.client.emit("bluff", bluff, (hash: string) => {
-      console.log("hash", hash);
       this.$emit("data", {
         answer: bluff,
         answerHash: hash

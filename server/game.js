@@ -25,7 +25,7 @@ class Game {
     }
 
     _newState() {
-        const lastCount = (this.state ? this.state.count : undefined) || -1;
+        const lastCount = (!!this.state && this.state.count >= 0) ? this.state.count : -1;
         this.state = {
             state: State.question,
             count: lastCount + 1,
@@ -66,6 +66,10 @@ class Game {
                 break;
             case State.votes:
                 this._handleVotesData(data);
+                break;
+            case State.results:
+                this._newState();
+                this._save();
                 break;
         }
         this.emitState();
@@ -199,7 +203,7 @@ class Game {
         return this.getPlayer(this.masterId);
     }
 
-    emitState(socket = Game.io.to(this.id)) {
+    emitState(socket = Game.io.to(this.id)) {        
         socket.emit('state', { ...this.state, lock: undefined });
     }
 
