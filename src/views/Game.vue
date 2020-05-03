@@ -93,7 +93,7 @@ export default class GameView extends Vue {
         break;
       case GameState.results:
         this.action = "Nouvelle question";
-        if (!!data.voteId) this.player!.voteId = data.voteId;
+        if (!!this.data.voteId) this.player!.voteId = this.data.voteId;
         this.gameView = ResultsPlayer;
         break;
     }

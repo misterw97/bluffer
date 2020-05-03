@@ -31,7 +31,7 @@ export default class App extends Vue {
 
   @Socket()
   disconnect() {
-    console.log("disconnect");
+    console.log("disconnected");
     this.connected = false;
   }
 }

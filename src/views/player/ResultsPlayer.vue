@@ -28,8 +28,6 @@ export default class extends Vue {
   private votes: Vote[] = [];
 
   mounted() {
-    console.log(this.game.data.answers);
-
     this.responses = this.game!.data.answers!.map(
       ({ hash, value, good, authors, votes }: GameAnswer) => {
         if (!!votes)
