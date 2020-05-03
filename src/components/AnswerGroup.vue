@@ -3,7 +3,7 @@
     <div class="responses">
       <div v-for="response in responses" :key="response.hash" class="response">
         <Button
-          @vote="vote(response)"
+          @click="vote(response)"
           :disabled="!!disabled || response.disabled"
         >{{response.value}}</Button>
         <div
