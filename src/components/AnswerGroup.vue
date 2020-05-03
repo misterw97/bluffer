@@ -1,9 +1,9 @@
 <template>
   <main>
     <div class="responses">
-      <div v-for="response in responses" :key="response.id" class="response">
+      <div v-for="response in responses" :key="response.hash" class="response">
         <Button
-          @click="click(response)"
+          @vote="vote(response)"
           :disabled="!!disabled || response.disabled"
         >{{response.value}}</Button>
         <div
@@ -20,9 +20,10 @@
         </div>
         <div class="authors">
           <Avatar
-            v-for="a in authors"
+            v-for="a in []"
+            class="avatar"
             :key="a.id"
-            :size="25"
+            :size="20"
             :playerId="a.id"
           />
         </div> 
@@ -57,13 +58,8 @@ export default class extends Vue {
   @Prop() private votes!: Player[];
   @Prop() private player!: Player;
 
-  authors = [
-    {id:1},
-    {id:2},
-  ]
-
-  click(response: GameAnswer) {
-    if (!this.disabled) this.$emit("click", response);
+  vote(response: GameAnswer) {
+    if (!this.disabled) this.$emit("vote", response);
   }
 
   getMyPointsPerResponse(response: GameAnswer) {
@@ -115,6 +111,13 @@ $margin: 10px;
       color: $primary;
       font-size: 1.3em;
       font-weight: bold;
+    }
+
+    .authors {
+      position: absolute;
+      top: -10px;
+      left: #{$size / 2};
+      display: flex;
     }
 
     .votes {
