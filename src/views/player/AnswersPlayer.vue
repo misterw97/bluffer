@@ -19,7 +19,11 @@
       placeholder="Le maître du jeu peut revoir une réponse pour la rendre plus crédible, plus ressemblante aux autres ou l'associer à une similaire (peut être la vraie?)."
     ></Answer>
 
-    <Button v-show="(!sent)||unsentReview" @click="sendAnswer()">Envoyer</Button>
+    <Button
+      v-show="(!sent)||unsentReview"
+      :disabled="sent?(reviewedAnswer.length<1):(firstAnswer.length<1)"
+      @click="sendAnswer()"
+    >Envoyer</Button>
   </div>
 </template>
 
