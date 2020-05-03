@@ -21,7 +21,7 @@
       </div>
     </div>
 
-    <div v-if="votes.length > 1" class="totalPoints">
+    <div v-if="player.name !== 'Partie' && votes.length > 1" class="totalPoints">
       <h1>+{{getTotalPoints()}}pts</h1>
     </div>
   </main>
