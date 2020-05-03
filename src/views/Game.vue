@@ -186,5 +186,12 @@ main {
     z-index: 1;
     background: white;
   }
+
+  #fab {
+    width: 300px;
+    // float: right;
+    position: relative;
+    height: 50px;
+  }
 }
 </style>
