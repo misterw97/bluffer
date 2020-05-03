@@ -1,3 +1,4 @@
+const crypto = require("crypto");
 const { getGame, setGame } = require('./datasource');
 const { randomInt } = require('./utils');
 
@@ -80,25 +81,54 @@ class Game {
     _handleAnswerData(data) {
         if (!data.answer || data.answer.length < MIN_LENGTH)
             throw new Error('missing question or length under ' + MIN_LENGTH);
-        // TODO: mix answers and hash them 
-        //data.answer
-        this.state.data = {
-            answers: [data.answer]
-        };
+        const lock = this.state.lock;
+        lock.bluffs[0] = data.answer;
+        for (let player in lock.bluffs) {
+            const text = lock.bluffs[player];
+            const hash = this._hash(text);
+            lock.answers[hash] = text;
+            lock.bluffs[player] = hash;
+        }
+        this.state.data.answers = Object.entries(lock.answers)
+            .map((a)=>({hash: a[0], value: a[1]})).sort((a,b)=>a.hash>b.hash?1:-1);
         this.state.state = State.votes;
         this._save();
     }
 
-    updatePlayerBluff(player, bluff, fromMaster = false) {
+    _hash(data) {
+        return crypto.createHash("sha1").update(data).digest("hex");
+    }
+
+    updatePlayerBluff(playerId, bluff, fromMaster = false) {
+        const player = this.getPlayer(playerId);
+        if (!player)
+            throw new Error(`Cannot find player #${player.id}.`);
         this.state.lock.bluffs[player.id] = bluff;
+        const hash = this._hash(bluff);
+        player.answerId = hash;
         this._save();
         if (fromMaster)
-            Game.io.to(player.socket).emit('bluff', bluff);
+            Game.io.to(player.socket).emit('bluff', {
+                hash,
+                bluff
+            });
         else
             Game.io.to(this.getMaster().socket).emit('bluff', {
                 player,
                 bluff
             });
+        return hash;
+    }
+
+    registerVote(playerId, answerId) {
+        const player = this.getPlayer(playerId);
+        if (!player)
+            throw new Error(`Cannot find player #${player.id}.`);
+        if (player.answerId == answerId)
+            throw new Error('A player cannot vote for himself');
+        player.voteId = answerId;
+        this._save();
+        return 'OK: '+answerId;
     }
 
     master(...data) {
@@ -139,7 +169,7 @@ class Game {
         const game = this;
         Object.keys(this.players).forEach(playerId => {
             const player = game.players[playerId];
-            if (!player.isMaster) scores.push(player);
+            if (!player.isMaster) scores.push({...player, answerId: undefined});
         });
         socket.emit('scores', scores);
     }

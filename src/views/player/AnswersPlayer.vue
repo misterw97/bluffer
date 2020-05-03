@@ -49,22 +49,31 @@ export default class AnswersPlayer extends Vue {
   private unsentReview: boolean = false;
 
   @Socket()
-  bluff(data: any) {
+  bluff({ bluff, hash }: { bluff: string; hash: string }) {
     this.unsentReview = true;
-    this.reviewedAnswer = data;
+    this.reviewedAnswer = bluff;
+    this.$emit("data", {
+      answer: bluff,
+      answerHash: hash
+    });
   }
 
   sendAnswer() {
     const bluff = this.sent ? this.reviewedAnswer : this.firstAnswer;
-    this.$socket.client.emit("bluff", bluff);
-    if (this.sent) {
-      this.firstAnswer = this.reviewedAnswer;
-      this.reviewedAnswer = "";
-      this.unsentReview = false;
-    } else {
-      // TODO: check callback and md5 hash to mark as sent
-      this.sent = true;
-    }
+    this.$socket.client.emit("bluff", bluff, (hash: string) => {
+      console.log("hash", hash);
+      this.$emit("data", {
+        answer: bluff,
+        answerHash: hash
+      });
+      if (this.sent) {
+        this.firstAnswer = this.reviewedAnswer;
+        this.reviewedAnswer = "";
+        this.unsentReview = false;
+      } else {
+        this.sent = true;
+      }
+    });
   }
 }
 </script>

@@ -58,7 +58,7 @@ export default class GameView extends Vue {
   private game: Game | null = null;
   private gameView: GameViewType | null = null;
   private action: string = "";
-  private data?: any;
+  private data?: any = {};
 
   @Socket()
   state(data: any) {
@@ -71,12 +71,13 @@ export default class GameView extends Vue {
         this.gameView = this.player?.isMaster ? QuestionMaster : QuestionPlayer;
         break;
       case GameState.answers:
-        if (!this.player?.isMaster) {
-          this.gameView = AnswersPlayer;
-          break;
-        }
         this.action = "Ouvrir le vote";
-        this.gameView = AnswersMaster;
+        this.gameView = !!this.player?.isMaster ? AnswersMaster : AnswersPlayer;
+        break;
+      case GameState.votes:
+        this.action = "Fermer le vote";
+        this.gameView = VotesPlayer;
+        if (!!data.answerHash) this.player!.answerId = data.answerHash;
         break;
     }
   }

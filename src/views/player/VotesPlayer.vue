@@ -34,16 +34,29 @@ export default class extends Vue {
   @Prop() private game!: Game;
   @Prop() private player!: Player;
 
-  private voted: number = -1;
+  private voted: string = '';
+  private responses = [];
 
-  responses = [
-    { id: 1, title: "Réponse 1, credible mais bon, on a quand même un doute" },
-    { id: 2, title: "Réponse 2, la mienne", disabled: true },
-    { id: 3, title: "Réponse 3, la vraie" }
-  ];
+  mounted() {
+    if (this.player.voteId)
+     this.voted = this.player.voteId;
+    this.responses = this.game.data.answers.map(
+      ({hash, value}: {hash: string, value: string}) => ({
+        id: hash,
+        title: value,
+        disabled: hash == this.player.answerId || !!this.player.isMaster
+      })
+    );
+  }
 
   vote(response: any) {
-    this.voted = response.id;
+    // this.voted = response.id;
+    this.$socket.client.emit('vote', response.id, (data: string) => {
+      if (data == 'OK: '+response.id)
+        this.voted = response.id;
+      else
+        this.voted = '';
+    });
   }
 }
 </script>

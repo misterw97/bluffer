@@ -5,4 +5,6 @@ export default interface Player {
     score: number;
     socket?: string;
     isMaster?: boolean;
+    answerId?: string;
+    voteId?: string;
 }
