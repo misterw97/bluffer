@@ -26,14 +26,28 @@ export default class extends Vue {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 90px 0;
+  padding: 30px 0;
+  flex-direction: column;
 
   .logo {
-    margin-right: 60px;
+    margin-bottom: 30px;
   }
 
   h2 {
-    max-width: 300px;
+    text-align: center;
+  }
+
+  @include sm {
+    padding: 90px 0;
+    flex-direction: row;
+
+    .logo {
+      margin: 0 10px 0 0;
+    }
+
+    h2 {
+      max-width: 300px;
+    }
   }
 }
 </style>
