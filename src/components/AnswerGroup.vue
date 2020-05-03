@@ -15,7 +15,7 @@
             v-for="vote in votes.filter(vote => vote.voteId === response.id)"
             :key="vote.playerId"
             :size="35"
-            :playerId="vote.playerId"
+            :playerId="vote.player.id"
           />
         </div>
       </div>
