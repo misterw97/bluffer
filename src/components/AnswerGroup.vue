@@ -18,6 +18,14 @@
             :playerId="vote.player.id"
           />
         </div>
+        <div class="authors">
+          <Avatar
+            v-for="a in authors"
+            :key="a.id"
+            :size="25"
+            :playerId="a.id"
+          />
+        </div> 
       </div>
     </div>
 
@@ -48,6 +56,11 @@ export default class extends Vue {
   @Prop() private responses!: GameAnswer[];
   @Prop() private votes!: Player[];
   @Prop() private player!: Player;
+
+  authors = [
+    {id:1},
+    {id:2},
+  ]
 
   click(response: GameAnswer) {
     if (!this.disabled) this.$emit("click", response);
@@ -87,6 +100,7 @@ $margin: 10px;
     display: flex;
     align-items: center;
     height: 100%;
+    margin-bottom: 20px;
 
     @include sm {
       width: calc(50% - #{2 * $margin});

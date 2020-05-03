@@ -40,6 +40,7 @@ export default class extends Vue {
           hash,
           value,
           good,
+          authors,
           votes,
           disabled: hash == this.player.answerId || !!this.player.isMaster
         };
