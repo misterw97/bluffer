@@ -6,7 +6,7 @@
       class="avatar"
       v-html="svg"
     />
-    <div v-if="!!player && !!player.done" class="done" />
+    <div v-if="!!checkmark && !!player && !!player.done" class="done" />
   </main>
 </template>
 
@@ -22,6 +22,7 @@ import Player from "../models/Player";
 export default class extends Vue {
   @Prop() private player!: Player;
   @Prop() private size!: number;
+  @Prop() private checkmark?: boolean;
 
   options = {
     mood: ["happy"],
