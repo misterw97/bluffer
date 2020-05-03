@@ -10,7 +10,7 @@
     >
       <Avatar :checkmark="true" class="avatar" :size="50" :player="p" />
       <div class="info">
-        <a :href="`/#/game/${p.game}/player/${p.id}`" v-if="player.isMaster">{{ p.name }}</a>
+        <a target="_blank" :href="`#/game/${p.game}/player/${p.id}`" v-if="player.isMaster">{{ p.name }}</a>
         <div v-else>{{ p.name }}</div>
         <div>{{ p.score }}pts</div>
       </div>

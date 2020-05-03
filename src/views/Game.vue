@@ -3,7 +3,7 @@
     <div v-if="!!player&&!!game" class="game">
       <div class="row">
         <div class="col">
-          <h1 v-if="player.isMaster">Jeu <a :href="`#/?code=${player.game}`">#{{ player.game }}</a></h1>
+          <h1 v-if="player.isMaster">Jeu <a target="_blank" :href="`#/?code=${player.game}`">#{{ player.game }}</a></h1>
           <h1 v-else>{{ player.name }}</h1>
 
           <h2 v-if="player.isMaster">{{ player.name }} (Maître de jeu)</h2>
