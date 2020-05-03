@@ -19,11 +19,12 @@
           />
         </div>
         <div class="authors">
+          <div class="good-response" v-if="response.good" />
           <Avatar
-            v-for="a in []"
+            v-for="a in response.authors"
             class="avatar"
             :key="a.id"
-            :size="20"
+            :size="25"
             :playerId="a.id"
           />
         </div> 
@@ -113,15 +114,25 @@ $margin: 10px;
       font-weight: bold;
     }
 
-    .authors {
+    .authors, .votes {
       position: absolute;
-      top: -10px;
-      left: #{$size / 2};
       display: flex;
     }
 
+    .authors {
+      top: -10px;
+      left: #{$size / 2};
+
+      .good-response {
+        background-color: $green;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        border: 1px solid white;
+      }
+    }
+
     .votes {
-      position: absolute;
       bottom: #{$size / -2};
       height: $size;
       right: #{$size / 2};
