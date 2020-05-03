@@ -8,7 +8,7 @@
       class="player"
       :key="p.id"
     >
-      <Avatar :size="50" :player="p" />
+      <Avatar :size="50" :playerId="p.id" />
       <div class="info">
         <div>{{ p.name }}</div>
         <div>{{ p.score }}pts</div>

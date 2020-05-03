@@ -1,9 +1,9 @@
 <template>
   <img
-    v-if="!!player"
+    v-if="!!playerId"
     v-bind:style="`width:${size}px`"
-    :src="`https://avatars.dicebear.com/v2/bottts/${player.id}.svg?mood[]=happy&radius=50&background=${getBackground()}`"
-    :alt="`Avatar de ${player.name}`"
+    :src="`https://avatars.dicebear.com/v2/bottts/${playerId}.svg?mood[]=happy&radius=50&background=${getBackground()}`"
+    :alt="`Avatar`"
   />
 </template>
 
@@ -15,11 +15,11 @@ import Player from "../models/Player";
   components: {}
 })
 export default class extends Vue {
-  @Prop() private player!: Player;
+  @Prop() private playerId!: string;
   @Prop() private size!: number;
 
   getBackground() {
-    const background = Math.floor(parseInt(this.player.id) / 10);
+    const background = Math.floor(parseInt(this.playerId) / 10);
     return `%23${background}`;
   }
 }
