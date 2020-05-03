@@ -4,12 +4,13 @@
 
     <h2>Quel est ton prénom?</h2>
     <input type="text" v-model="name" placeholder="Jean-Pierre" />
-    <Button v-if="!join" @click="createNewGame()">Créer un nouveau jeu</Button>
+    <Button v-if="!join" :disabled="!nameIsValid" @click="createNewGame()">Créer un nouveau jeu</Button>
     <Button v-if="!join" @click="joinExistingGame()">Rejoindre une partie</Button>
 
     <h2 v-if="join">Quel est le code de la partie?</h2>
     <input v-if="join" type="text" v-model="code" placeholder="123456" />
-    <Button v-if="join" @click="joinExistingGame()">Rejoindre</Button>
+    <Button v-if="join" :disabled="!codeIsValid" @click="joinExistingGame()">Rejoindre</Button>
+    <Button v-if="join" @click="join=false">Annuler</Button>
   </div>
 </template>
 
@@ -33,13 +34,21 @@ export default class Welcome extends Vue {
     console.log("connection established");
   }
 
+  get codeIsValid() {
+    return /^[0-9]{6}$/.test(this.code);
+  }
+
+  get nameIsValid() {
+    return this.name.trim().length > 1;
+  }
+
   joinExistingGame() {
     if (this.join) {
-      if (this.code.length !== 6)
-        return alert('Le code de partie doit avoir 6 chiffres.');
-      if (this.name.length < 2)
-        return alert('Le prénom doit avoir au moins 2 caractères.')
-      this.joinGame({ name: this.name, game: this.code });
+      if (!this.codeIsValid)
+        return alert("Le code de partie doit avoir 6 chiffres.");
+      if (!this.nameIsValid)
+        return alert("Le prénom doit avoir au moins 2 caractères.");
+      this.joinGame({ name: this.name.trim(), game: this.code });
     } else {
       this.join = true;
     }
@@ -51,13 +60,17 @@ export default class Welcome extends Vue {
 
   joinGame(value: any) {
     this.$socket.client.emit("join", value, (data: any) => {
-      this.$router.push({
-        name: "Game",
-        params: {
-          player: data.id,
-          game: data.game
-        }
-      });
+      this.$router
+        .push({
+          name: "Game",
+          params: {
+            player: data.id,
+            game: data.game
+          }
+        })
+        .catch(e =>
+          alert("Impossible de rejoindre ce jeu. Est-ce le bon code ?")
+        );
     });
   }
 }
