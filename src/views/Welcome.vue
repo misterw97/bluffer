@@ -35,6 +35,10 @@ export default class Welcome extends Vue {
 
   joinExistingGame() {
     if (this.join) {
+      if (this.code.length !== 6)
+        return alert('Le code de partie doit avoir 6 chiffres.');
+      if (this.name.length < 2)
+        return alert('Le prénom doit avoir au moins 2 caractères.')
       this.joinGame({ name: this.name, game: this.code });
     } else {
       this.join = true;

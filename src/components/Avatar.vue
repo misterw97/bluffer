@@ -1,14 +1,11 @@
 <template>
-  <img
-    v-if="!!playerId"
-    v-bind:style="`width:${size}px`"
-    :src="`https://avatars.dicebear.com/v2/bottts/${playerId}.svg?mood[]=happy&radius=50&background=${getBackground()}`"
-    :alt="`Avatar`"
-  />
+  <div v-if="!!playerId" v-bind:style="`width:${size}px`" class="avatar" v-html="svg" />
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
+import Avatars from "@dicebear/avatars";
+import sprites from "@dicebear/avatars-bottts-sprites";
 import Player from "../models/Player";
 
 @Component({
@@ -18,16 +15,24 @@ export default class extends Vue {
   @Prop() private playerId!: string;
   @Prop() private size!: number;
 
+  options = {
+    mood: ["happy"],
+    radius: 50,
+    background: this.getBackground()
+  };
+  avatars = new Avatars(sprites, this.options);
+  svg = this.avatars.create(this.playerId);
+
   getBackground() {
     const background = Math.floor(parseInt(this.playerId) / 10);
-    return `%23${background}`;
+    return `#${background}`;
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-img {
+.avatar {
   border: 1px solid white;
   border-radius: 50%;
 }

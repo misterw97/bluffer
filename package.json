@@ -8,6 +8,8 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@dicebear/avatars": "^4.0.8",
+    "@dicebear/avatars-bottts-sprites": "^4.0.8",
     "core-js": "^3.6.4",
     "express": "^4.17.1",
     "redis": "^3.0.2",
