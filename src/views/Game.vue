@@ -17,8 +17,7 @@
         <Button v-if="player.isMaster && action!=''" id="fab" @click="sendData()">{{ action }}</Button>
       </div>
 
-      <div v-if="(!game)||(game.state=='w')">waiting animation... {{ game }}// TODO</div>
-      <component v-else v-bind:is="gameView" :player="player" :game="game" @data="updateData"></component>
+      <component v-bind:is="gameView" :player="player" :game="game" @data="updateData"></component>
     </div>
     <PlayerList class="player-list" v-show="!!player" :player="player" />
   </main>
@@ -65,8 +64,6 @@ export default class GameView extends Vue {
   @Socket()
   state(data: any) {
     this.game = data as Game;
-    // TODO move /views/master/QuestionMaster.vue
-    // TODO move /views/player/QuestionPlayer.vue
     switch (this.game.state) {
       case GameState.question:
         this.action = "Ouvrir les réponses";

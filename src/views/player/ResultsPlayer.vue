@@ -13,7 +13,6 @@ import Game from "../../models/Game";
 import Player from "../../models/Player";
 import Vote from "../../models/Vote";
 import GameAnswer from "../../models/GameAnswer";
-import ResponseType from "../../models/ResponseType";
 
 @Component({
   components: {
@@ -25,7 +24,7 @@ export default class extends Vue {
   @Prop() private game!: Game;
   @Prop() private player!: Player;
 
-  private responses: Array<ResponseType> = [];
+  private responses: Array<GameAnswer> = [];
   private votes: Vote[] = [];
 
   mounted() {
@@ -38,8 +37,8 @@ export default class extends Vue {
             this.votes.push({ voteId: vote.voteId!, player: vote })
           );
         return {
-          id: hash,
-          title: value,
+          hash,
+          value,
           good,
           votes,
           disabled: hash == this.player.answerId || !!this.player.isMaster

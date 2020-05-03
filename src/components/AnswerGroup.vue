@@ -5,14 +5,14 @@
         <Button
           @click="click(response)"
           :disabled="!!disabled || response.disabled"
-        >{{response.title}}</Button>
+        >{{response.value}}</Button>
         <div
           v-if="getMyPointsPerResponse(response) > 0"
           class="points"
         >+{{getMyPointsPerResponse(response)}} pt{{getMyPointsPerResponse(response) > 1 ? 's': ''}}</div>
         <div class="votes">
           <Avatar
-            v-for="vote in votes.filter(vote => vote.voteId === response.id)"
+            v-for="vote in votes.filter(vote => vote.voteId === response.hash)"
             :key="vote.playerId"
             :size="35"
             :playerId="vote.player.id"
@@ -34,6 +34,7 @@ import Avatar from "./Avatar.vue";
 import Button from "./Button.vue";
 import Player from "../models/Player";
 import Vote from "../models/Vote";
+import GameAnswer from "../models/GameAnswer";
 
 @Component({
   components: {
@@ -44,31 +45,28 @@ import Vote from "../models/Vote";
 })
 export default class extends Vue {
   @Prop() private disabled?: boolean;
-  @Prop() private responses!: any[];
+  @Prop() private responses!: GameAnswer[];
   @Prop() private votes!: Player[];
   @Prop() private player!: Player;
 
-  click(data: any) {
-    if (!!!this.disabled) this.$emit("click", data);
+  click(response: GameAnswer) {
+    if (!this.disabled) this.$emit("click", response);
   }
 
-  getMyVote() {
-    return this.votes.find(vote => vote.id === this.player.id);
-  }
-
-  getMyPointsPerResponse(response: any) {
-    if (response.id === this.player.answerId) {
-      return 2 * this.votes.filter(v => v.voteId === response.id).length;
-    } else if (!!response.good) {
-      return response.votes.some((vote: Player) => vote.id === this.player.id) ? 1 : 0;
+  getMyPointsPerResponse(response: GameAnswer) {
+    if (response.good) {
+      if (response.hash === this.player.voteId) return 1;
+    } else if (response.hash === this.player.answerId) {
+      return 2 * (response.votes?.length || 0);
     }
     return 0;
   }
 
   getTotalPoints() {
-    return this.responses
-      .map(response => this.getMyPointsPerResponse(response))
-      .reduce((a, b) => a + b, 0);
+    return this.responses.reduce(
+      (acc, response) => acc + this.getMyPointsPerResponse(response),
+      0
+    );
   }
 }
 </script>
