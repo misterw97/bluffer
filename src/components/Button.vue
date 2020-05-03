@@ -12,8 +12,7 @@ export default class Button extends Vue {
   @Prop() private disabled?: boolean;
 
   myMethod() {
-    if (!!!this.disabled)
-      this.$emit("click");
+    if (!!!this.disabled) this.$emit("click");
   }
 }
 </script>
@@ -31,6 +30,7 @@ export default class Button extends Vue {
   color: white;
   font-weight: bold;
   @include round;
+  user-select: none;
 
   &:hover {
     cursor: pointer;
