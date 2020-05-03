@@ -42,7 +42,7 @@ export default class extends Vue {
 $margin: 20px;
 
 .player-list {
-  width: 300px;
+  width: 320px;
   height: 100vh;
   background-color: white;
   color: $primary;
