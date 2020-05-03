@@ -117,6 +117,7 @@ main {
   width: 100%;
 
   .game {
+    position: relative;
     flex: 3;
     padding: $padding;
     text-align: left;

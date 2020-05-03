@@ -1,5 +1,6 @@
 <template>
   <div class="votes">
+    <Timer class="timer" :seconds="30" />
     <Answer :disabled="true" :value="game.data.question" title="Question"></Answer>
 
     <h2>
@@ -13,16 +14,18 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import Answer from "../../components/Answer.vue";
+import Timer from "../../components/Timer.vue";
 import AnswerGroup from "../../components/AnswerGroup.vue";
 import Game from "../../models/Game";
 import Player from "../../models/Player";
 import Vote from "../../models/Vote";
-import GameAnswer from '../../models/GameAnswer';
+import GameAnswer from "../../models/GameAnswer";
 
 @Component({
   components: {
     Answer,
-    AnswerGroup
+    AnswerGroup,
+    Timer
   }
 })
 export default class extends Vue {
@@ -61,4 +64,13 @@ export default class extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
+.votes {
+  .timer {
+    position: absolute;
+    right: $padding;
+    color: $primary;
+    font-weight: bold;
+    font-size: 1.5em;
+  }
+}
 </style>
