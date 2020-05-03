@@ -35,11 +35,13 @@ export default class extends Vue {
       this.votes = [{ voteId: this.player.voteId, player: this.player }];
 
     this.responses = this.game.data.answers.map(
-      ({ hash, value }: { hash: string; value: string }) => ({
-        id: hash,
-        title: value,
-        disabled: (hash == this.player.answerId) || (!!this.player.isMaster)
-      })
+      ({ hash, value }: { hash: string; value: string }) => {
+        return {
+          id: hash,
+          title: value,
+          disabled: hash === this.player.answerId || !!this.player.isMaster
+        };
+      }
     );
   }
 

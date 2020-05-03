@@ -62,7 +62,6 @@ export default class AnswersMaster extends Vue {
 
   @Socket()
   bluff(b: Bluff) {
-    console.log(b);
     this.answers = this.answers.filter(a => a.player.id != b.player.id);
     this.answers.push(b);
   }

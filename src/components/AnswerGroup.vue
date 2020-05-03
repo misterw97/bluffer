@@ -69,7 +69,7 @@ export default class extends Vue {
   getTotalPoints() {
     return this.responses
       .map(response => this.getMyPointsPerResponse(response))
-      .reduce((a, b) => a + b);
+      .reduce((a, b) => a + b, 0);
   }
 }
 </script>

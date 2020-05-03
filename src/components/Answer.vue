@@ -50,7 +50,6 @@ export default class extends Vue {
 
   save() {
     if (this.valueBeforeEdit !== this.fieldValue) {
-      console.log("EDIT");
       this.$emit("edit", this.fieldValue);
     }
     this.hasBeenClicked = true;

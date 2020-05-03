@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <h1>Bienvenue au Bluffer!</h1>
+    <h1 id="main">Bienvenue au Bluffer!</h1>
 
     <h2>Quel est ton prénom?</h2>
     <input type="text" v-model="name" placeholder="Jean-Pierre" />
@@ -67,6 +67,12 @@ export default class Welcome extends Vue {
   align-items: flex-start;
   justify-content: center;
   margin: 15vh auto auto;
+  padding: 30px;
+  text-align: left;
+
+  h1#main {
+    margin-bottom: 20px;
+  }
 
   .button,
   input,
