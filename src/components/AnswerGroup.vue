@@ -21,7 +21,7 @@
       </div>
     </div>
 
-    <div class="totalPoints">
+    <div v-if="votes.length > 1" class="totalPoints">
       <h1>+{{getTotalPoints()}}pts</h1>
     </div>
   </main>
@@ -45,7 +45,7 @@ import Vote from "../models/Vote";
 export default class extends Vue {
   @Prop() private disabled?: boolean;
   @Prop() private responses!: any[];
-  @Prop() private votes!: Vote[];
+  @Prop() private votes!: Player[];
   @Prop() private player!: Player;
 
   click(data: any) {
@@ -53,7 +53,7 @@ export default class extends Vue {
   }
 
   getMyVote() {
-    return this.votes.find(vote => vote.playerId === this.player.id);
+    return this.votes.find(vote => vote.id === this.player.id);
   }
 
   getMyPointsPerResponse(response: any) {

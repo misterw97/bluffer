@@ -23,26 +23,35 @@ export default class extends Vue {
   @Prop() private game!: Game;
   @Prop() private player!: Player;
 
-  responses = [
-    {
-      good: false,
-      id: "1",
-      title: "Réponse 1, credible mais bon, on a quand même un doute"
-    },
-    {
-      good: false,
-      id: "2",
-      title: "Réponse 2, la mienne"
-    },
-    { good: true, id: "3", title: "Réponse 3, la vraie" }
-  ];
+  private responses = [];
+  private votes: Vote[] = [];
 
-  votes: Vote[] = [
-    { voteId: "1", playerId: "1000000" },
-    { voteId: "2", playerId: "2000000" },
-    { voteId: "2", playerId: "3000000" },
-    { voteId: "3", playerId: this.player.id }
-  ];
+  mounted() {
+    console.log(this.game.data.answers);
+
+    type FinalResponse = {
+      hash: string;
+      value: string;
+      good: boolean;
+      authors: any[];
+      votes: Player[];
+    };
+
+    this.responses = this.game.data.answers.map(
+      ({ hash, value, good, authors, votes }: FinalResponse) => {
+        votes.forEach(vote =>
+          this.votes.push({ voteId: vote.voteId!, player: vote })
+        );
+        return {
+          id: hash,
+          title: value,
+          good,
+          votes,
+          disabled: hash == this.player.answerId || !!this.player.isMaster
+        };
+      }
+    );
+  }
 }
 </script>
 

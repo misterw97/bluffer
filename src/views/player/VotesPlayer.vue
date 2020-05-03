@@ -32,13 +32,13 @@ export default class extends Vue {
 
   mounted() {
     if (this.player.voteId)
-      this.votes = [{ voteId: this.player.voteId, playerId: this.player.id }];
+      this.votes = [{ voteId: this.player.voteId, player: this.player }];
 
     this.responses = this.game.data.answers.map(
       ({ hash, value }: { hash: string; value: string }) => ({
         id: hash,
         title: value,
-        disabled: hash == this.player.answerId || !!this.player.isMaster
+        disabled: (hash == this.player.answerId) || (!!this.player.isMaster)
       })
     );
   }
@@ -49,7 +49,7 @@ export default class extends Vue {
     this.$emit("data", { voteId: response.id });
     this.$socket.client.emit("vote", response.id, (data: string) => {
       if (data == "OK: " + response.id)
-        this.votes = [{ voteId: response.id, playerId: this.player.id }];
+        this.votes = [{ voteId: response.id, player: this.player }];
       else this.votes = [];
     });
   }
