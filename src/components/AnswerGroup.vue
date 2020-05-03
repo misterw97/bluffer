@@ -12,8 +12,8 @@
         >+{{getMyPointsPerResponse(response)}} pt{{getMyPointsPerResponse(response) > 1 ? 's': ''}}</div>
         <div class="votes">
           <Avatar
-            v-for="vote in votes.filter(a => a.responseId === response.id)"
-            :key="vote.player.id"
+            v-for="vote in votes.filter(vote => vote.voteId === response.id)"
+            :key="vote.playerId"
             :size="35"
             :player="vote.player"
           />
