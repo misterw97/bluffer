@@ -1,13 +1,9 @@
 import GameState from './GameState';
-
-interface GameAnswer {
-    hash: string;
-    value: string;
-}
+import GameAnswer from './GameAnswer';
 
 interface GameData {
     question?: string;
-    answers?: 
+    answers?: Array<GameAnswer>;
 }
 
 export default interface Game {
