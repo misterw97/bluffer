@@ -3,8 +3,8 @@
 ![Screenshots](./design/bluffer-demo.png)
 
 ## Abstract
-In these times of lockdown, it is important to stay in touch with our friends and family. What's better than a good board game? Unfortunately, some of these games cannot be easily played remotely and no online tool seems suitable. Sure, we could hijack our traditional messaging apps but it would be more fun to be able to focus on the game!
-The [Bluffer](https://www.trictrac.net/jeu-de-societe/bluffer) is for us one of the most user-friendly and fun games to play. However, it is also one of the hardest to virtualize.
+In these times of lockdown, it is critical to stay in touch with our friends and family. What's better for that than a great board game? Unfortunately, some of these games can merely be played remotely. We could hijack our traditional messaging apps. But wouldn't it be funnier to focus on the game?     
+The [Bluffer](https://www.trictrac.net/jeu-de-societe/bluffer) is, for us, one of the most user-friendly and fun games to play. However, it's also one of the hardest to virtualize without specific tools.    
 Do you have a Bluffer at home? Clone this repository which provides client and server under open source license, launch your favorite video chat application with your friends or family and start playing!
 
 ## Getting started (developer)
