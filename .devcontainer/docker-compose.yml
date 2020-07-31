@@ -1,0 +1,22 @@
+version: '3.7'
+
+services:
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - '6379:6379'
+  app:
+    depends_on:
+      - redis
+    build: .
+    command: sleep infinity
+    environment:
+      PORT: 8080
+      REDIS_PORT: 6379
+      REDIS_HOST: 'redis'
+    ports:
+      - '8080:8080'
+      - '3000:3000'
+    volumes:
+      - ..:/workspace

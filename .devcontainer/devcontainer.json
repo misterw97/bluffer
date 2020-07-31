@@ -2,12 +2,9 @@
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.112.0/containers/typescript-node-12
 {
 	"name": "Node.js 12 & TypeScript",
-	"dockerFile": "Dockerfile",
-
-	// Set *default* container specific settings.json values on container create.
-	"settings": { 
-		"terminal.integrated.shell.linux": "/bin/bash"
-	},
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "app",
+	"workspaceFolder": "/workspace",
 
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
@@ -15,9 +12,6 @@
 		"dbaeumer.vscode-eslint",
 		"ms-vscode.vscode-typescript-tslint-plugin"
 	],
-
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	"forwardPorts": [8080, 3000],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	"postCreateCommand": "npm install",
