@@ -3,10 +3,14 @@
     <div v-if="!!player&&!!game" class="game">
       <div class="row">
         <div class="col">
-          <h1 v-if="player.isMaster">Jeu <a target="_blank" :href="`#/?code=${player.game}`">#{{ player.game }}</a></h1>
+          <h1 v-if="player.isMaster || isPartieDisplay">
+            Jeu
+            <a target="_blank" :href="`#/?code=${player.game}`">#{{ player.game }}</a>
+          </h1>
           <h1 v-else>{{ player.name }}</h1>
 
           <h2 v-if="player.isMaster">{{ player.name }} (Maître de jeu)</h2>
+          <h2 v-else-if="isPartieDisplay">{{ host }}</h2>
           <h2 v-else>Bluffer #{{ player.game }}</h2>
         </div>
         <GameStateDisplay :state="game.state" />
@@ -62,8 +66,8 @@ type GameViewType =
   components: {
     Button,
     PlayerList,
-    GameStateDisplay
-  }
+    GameStateDisplay,
+  },
 })
 export default class GameView extends Vue {
   private player: Player | null = null;
@@ -72,6 +76,11 @@ export default class GameView extends Vue {
   private action: string = "";
   private data?: any = {};
   private publicPath = process.env.BASE_URL;
+  private host: string = "";
+
+  get isPartieDisplay() {
+    return this.player?.name === "Partie";
+  }
 
   @Socket()
   state(data: any) {
@@ -106,10 +115,14 @@ export default class GameView extends Vue {
       "join",
       {
         id: playerId,
-        game: gameId
+        game: gameId,
       },
       (player: Player) => (this.player = player)
     );
+  }
+
+  beforeMount() {
+    this.host = window.location.host;
   }
 
   mounted() {

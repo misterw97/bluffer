@@ -1,5 +1,5 @@
 <template>
-  <div class="answers">
+  <div v-if="!isPartieDisplay" class="answers">
     <Answer :disabled="true" :value="game.data.question" title="Question"></Answer>
 
     <Answer
@@ -25,6 +25,9 @@
       @click="sendAnswer()"
     >Envoyer</Button>
   </div>
+  <div v-else>
+    <h1>{{game.data.question}}</h1>
+  </div>
 </template>
 
 <script lang="ts">
@@ -43,8 +46,8 @@ interface IAnswer {
 @Component({
   components: {
     Button,
-    Answer
-  }
+    Answer,
+  },
 })
 export default class AnswersPlayer extends Vue {
   @Prop() private player!: Player;
@@ -54,13 +57,17 @@ export default class AnswersPlayer extends Vue {
   private sent: boolean = false;
   private unsentReview: boolean = false;
 
+  get isPartieDisplay() {
+    return this.player.name === "Partie";
+  }
+
   @Socket()
   bluff({ bluff, hash }: { bluff: string; hash: string }) {
     this.unsentReview = true;
     this.reviewedAnswer = bluff;
     this.$emit("data", {
       answer: bluff,
-      answerHash: hash
+      answerHash: hash,
     });
   }
 
@@ -77,7 +84,7 @@ export default class AnswersPlayer extends Vue {
     this.$socket.client.emit("bluff", bluff, (hash: string) => {
       this.$emit("data", {
         answer: bluff,
-        answerHash: hash
+        answerHash: hash,
       });
       if (review) {
         this.firstAnswer = this.reviewedAnswer;

@@ -1,7 +1,9 @@
 <template>
   <div class="votes">
     <Timer class="timer" :seconds="30" />
-    <Answer :disabled="true" :value="game.data.question" title="Question"></Answer>
+    <Answer v-if="!isPartieDisplay" :disabled="true" :value="game.data.question" title="Question"></Answer>
+    <h1 v-else>{{ game.data.question }}</h1>
+    <br />
 
     <h2>
       Devine la bonne réponse !
@@ -25,12 +27,16 @@ import GameAnswer from "../../models/GameAnswer";
   components: {
     Answer,
     AnswerGroup,
-    Timer
-  }
+    Timer,
+  },
 })
 export default class extends Vue {
   @Prop() private game!: Game;
   @Prop() private player!: Player;
+
+  get isPartieDisplay() {
+    return this.player.name === "Partie";
+  }
 
   private responses: Array<GameAnswer> = [];
 
@@ -43,7 +49,7 @@ export default class extends Vue {
         return {
           hash,
           value,
-          disabled: hash === this.player.answerId || !!this.player.isMaster
+          disabled: hash === this.player.answerId || !!this.player.isMaster,
         };
       }
     );
