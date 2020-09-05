@@ -23,8 +23,12 @@ jobs:
       - uses: actions/checkout@v2
 
       # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Check if Docker image with tag already exists
         run: |
-          env
-          ls
-          curl --help
+          PACKAGE_JSON_VERSION=$(cat package.json | jq '.version')
+          echo -e "Version in package.json is $PACKAGE_JSON_VERSION"
+          GITHUB_REPOSITORY_NAME=$(echo $GITHUB_REPOSITORY | cut -d'\' -f2)
+          BLUFFER_VERSIONS=$(curl -X POST -H "Authorization: Bearer $ACCESS_TOKEN_PACKAGE_RW" -H "Content-Type: application/json" -d '{"query": "{ repository(owner: \"'"$GITHUB_REPOSITORY_OWNER"'\", name: \"'"$GITHUB_REPOSITORY_NAME"'\") { packages(last: 100){ nodes { packageType name latestVersion{ version } versions(last: 100) { nodes { version } } } } } }"}' "$GITHUB_GRAPHQL_URL")
+          echo -e "Package versions on GitHub repository are:"
+          echo $BLUFFER_VERSIONS | jq .
+          echo $BLUFFER_VERSIONS | jq '.data.repository.packages.nodes | map(select(.packageType == "DOCKER"))[0].versions.nodes | map(.version) | .[] | contains('$PACKAGE_JSON_VERSION')' | grep true && echo "Docker image with tag $PACKAGE_JSON_VERSION already exists" && false
