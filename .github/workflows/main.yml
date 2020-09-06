@@ -43,6 +43,7 @@ jobs:
           echo "::set-output name=tag::$PACKAGE_JSON_VERSION"
   build:
     if: ${{ needs.verify.outputs.build == 'true' }}
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
