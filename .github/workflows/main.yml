@@ -12,25 +12,48 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  verify:
     runs-on: ubuntu-latest
+
+    outputs:
+      build: ${{ steps.check.outputs.build }}
+      tag: ${{ steps.check.outputs.tag }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+        id: checkout
 
       # Runs a set of commands using the runners shell
       - name: Check if Docker image with tag already exists
+        id: check
         env:
           ACCESS_TOKEN_PACKAGE_RW: ${{ secrets.ACCESS_TOKEN_PACKAGE_RW }}
         run: |
           PACKAGE_JSON_VERSION=$(cat package.json | jq '.version')
+          BUILD=true
           echo -e "Version in package.json is $PACKAGE_JSON_VERSION"
           GITHUB_REPOSITORY_NAME=$(echo $GITHUB_REPOSITORY | cut -d'/' -f2)
-          BLUFFER_VERSIONS=$(curl -X POST -H "Authorization: Bearer $ACCESS_TOKEN_PACKAGE_RW" -H "Content-Type: application/json" -d '{"query": "{ repository(owner: \"'"$GITHUB_REPOSITORY_OWNER"'\", name: \"'"$GITHUB_REPOSITORY_NAME"'\") { packages(last: 100){ nodes { packageType name latestVersion{ version } versions(last: 100) { nodes { version } } } } } }"}' "$GITHUB_GRAPHQL_URL")
+          BLUFFER_VERSIONS=$(curl -s -X POST -H "Authorization: Bearer $ACCESS_TOKEN_PACKAGE_RW" -H "Content-Type: application/json" -d '{"query": "{ repository(owner: \"'"$GITHUB_REPOSITORY_OWNER"'\", name: \"'"$GITHUB_REPOSITORY_NAME"'\") { packages(last: 100){ nodes { packageType name latestVersion{ version } versions(last: 100) { nodes { version } } } } } }"}' "$GITHUB_GRAPHQL_URL")
           echo -e "Package versions on GitHub repository are:"
           echo $BLUFFER_VERSIONS | jq .
-          echo $BLUFFER_VERSIONS | jq '.data.repository.packages.nodes | map(select(.packageType == "DOCKER"))[0].versions.nodes | map(.version) | .[] | contains('$PACKAGE_JSON_VERSION')' | grep true && echo "Docker image with tag $PACKAGE_JSON_VERSION already exists" && false
+          echo $BLUFFER_VERSIONS | jq '.data.repository.packages.nodes | map(select(.packageType == "DOCKER"))[0].versions.nodes | map(.version) | .[] | contains('$PACKAGE_JSON_VERSION')' | grep true && echo "Docker image with tag $PACKAGE_JSON_VERSION already exists" && BUILD=false
+          echo "::set-output name=build::$BUILD"
+          echo "::set-output name=tag::$PACKAGE_JSON_VERSION"
+  build:
+    if: ${{ needs.verify.outputs.build == 'true' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+    
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v1
+        with:
+          username: misterw97
+          password: ${{ secrets.ACCESS_TOKEN_PACKAGE_RW }}
+          registry: docker.pkg.github.com
+          repository: misterw97/bluffer/bluffer
+          tags: ${{ needs.verify.outputs.tag }},latest
+          tag_with_ref: true
