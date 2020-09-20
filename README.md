@@ -1,3 +1,5 @@
+**DISCLAIMER: bad quality code, this project has mainly been developed in one night "hackthon-like" mode, for a one-time usage purpose**
+
 # Bluffer - Remote app
 
 ![Screenshots](./design/bluffer-demo.png)
